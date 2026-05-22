@@ -1,6 +1,6 @@
-# htmx Unleashed
+# Htmx Unleashed
 
-`htmx Unleashed` is a server-rendered demo app that shows how far htmx can go without adding a client-side JavaScript framework.
+`Htmx Unleashed` is a server-rendered demo app that shows how far htmx can go without adding a client-side JavaScript framework.
 
 The app uses:
 
@@ -59,25 +59,25 @@ For htmx attribute syntax and feature-by-feature examples, see [HTMX_REFERENCE.m
 
 This app is structured as a product-style htmx showcase. Each section demonstrates a real interaction pattern.
 
-| Area | htmx capability | What it shows |
-| --- | --- | --- |
-| Login form | `hx-post`, `HX-Redirect`, `hx-target`, `hx-indicator` | Submit credentials, show validation errors, and redirect after a successful session. |
-| Username check | `hx-get`, `hx-trigger="keyup changed delay:500ms"` | Debounced server validation while typing. |
-| Password strength | `hx-post`, `hx-trigger="keyup changed delay:300ms"` | Field-level feedback rendered by the server. |
-| Remember me info | `hx-get`, `hx-swap="innerHTML transition:true"` | Toggle-driven explanatory content. |
-| Registration wizard | `hx-get`, fragment swaps | Multi-step form screens loaded from the server. |
-| Lazy widgets | `hx-trigger="load"` | Dashboard tiles that hydrate themselves after page load. |
-| Infinite feed | `hx-trigger="revealed"` | A sentinel loads the next page when it scrolls into view. |
-| Live search | `hx-get`, debounced triggers | Search results update without client-side state management. |
-| CRUD table | `hx-post`, `hx-put`, `hx-delete`, `hx-confirm` | Add, edit, and delete rows inline. |
-| Count updates | `hx-swap-oob` | A row response also updates a separate item count outside the target. |
-| Tabs | `hx-get`, `hx-push-url`, transitions | Tab content and active tab state are returned as HTML. |
-| Polling stats | `hx-trigger="every 2s"` | Timed refreshes for live counters. |
-| Polling pause/resume | Fragment replacement | Swapping the polling panel removes or restores the timed trigger. |
-| Modal | `hx-get`, `hx-target` | Server-rendered dialog markup loaded on demand. |
-| Toast | `HX-Trigger`, `hx-swap="none"` | A response header fires an event, then another htmx listener fetches the toast. |
-| Theme toggle | `hx-put`, `HX-Trigger`, server session | The server stores the theme and triggers a CSS variable refresh. |
-| Sortable table | Query params, `hx-include`, `hx-trigger="change"` | Headers and filters request a re-rendered table region. |
+| Area                 | htmx capability                                       | What it shows                                                                        |
+| -------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Login form           | `hx-post`, `HX-Redirect`, `hx-target`, `hx-indicator` | Submit credentials, show validation errors, and redirect after a successful session. |
+| Username check       | `hx-get`, `hx-trigger="keyup changed delay:500ms"`    | Debounced server validation while typing.                                            |
+| Password strength    | `hx-post`, `hx-trigger="keyup changed delay:300ms"`   | Field-level feedback rendered by the server.                                         |
+| Remember me info     | `hx-get`, `hx-swap="innerHTML transition:true"`       | Toggle-driven explanatory content.                                                   |
+| Registration wizard  | `hx-get`, fragment swaps                              | Multi-step form screens loaded from the server.                                      |
+| Lazy widgets         | `hx-trigger="load"`                                   | Dashboard tiles that hydrate themselves after page load.                             |
+| Infinite feed        | `hx-trigger="revealed"`                               | A sentinel loads the next page when it scrolls into view.                            |
+| Live search          | `hx-get`, debounced triggers                          | Search results update without client-side state management.                          |
+| CRUD table           | `hx-post`, `hx-put`, `hx-delete`, `hx-confirm`        | Add, edit, and delete rows inline.                                                   |
+| Count updates        | `hx-swap-oob`                                         | A row response also updates a separate item count outside the target.                |
+| Tabs                 | `hx-get`, `hx-push-url`, transitions                  | Tab content and active tab state are returned as HTML.                               |
+| Polling stats        | `hx-trigger="every 2s"`                               | Timed refreshes for live counters.                                                   |
+| Polling pause/resume | Fragment replacement                                  | Swapping the polling panel removes or restores the timed trigger.                    |
+| Modal                | `hx-get`, `hx-target`                                 | Server-rendered dialog markup loaded on demand.                                      |
+| Toast                | `HX-Trigger`, `hx-swap="none"`                        | A response header fires an event, then another htmx listener fetches the toast.      |
+| Theme toggle         | `hx-put`, `HX-Trigger`, server session                | The server stores the theme and triggers a CSS variable refresh.                     |
+| Sortable table       | Query params, `hx-include`, `hx-trigger="change"`     | Headers and filters request a re-rendered table region.                              |
 
 ## Mental Model For React Developers
 
@@ -85,17 +85,17 @@ In React, you usually think in terms of client components, local state, props, e
 
 In this app, the split is different:
 
-| React habit | htmx/EJS equivalent here |
-| --- | --- |
-| Component | EJS partial in `views/partials/` |
-| Page component | EJS page in `views/` |
-| Layout component | `views/layout.ejs` |
-| API route returning JSON | Express route returning rendered HTML |
-| `useState` for UI state | Server session, URL/query params, or in-memory demo state |
-| `useEffect` for loading data | `hx-trigger="load"` or another htmx trigger |
-| Event handler like `onClick` | HTML attribute like `hx-get`, `hx-post`, `hx-delete` |
-| Conditional render | Server chooses which partial to render |
-| Client-side list update | Server returns one row, table, or OOB fragment |
+| React habit                  | htmx/EJS equivalent here                                  |
+| ---------------------------- | --------------------------------------------------------- |
+| Component                    | EJS partial in `views/partials/`                          |
+| Page component               | EJS page in `views/`                                      |
+| Layout component             | `views/layout.ejs`                                        |
+| API route returning JSON     | Express route returning rendered HTML                     |
+| `useState` for UI state      | Server session, URL/query params, or in-memory demo state |
+| `useEffect` for loading data | `hx-trigger="load"` or another htmx trigger               |
+| Event handler like `onClick` | HTML attribute like `hx-get`, `hx-post`, `hx-delete`      |
+| Conditional render           | Server chooses which partial to render                    |
+| Client-side list update      | Server returns one row, table, or OOB fragment            |
 
 The browser is not responsible for rebuilding the UI from JSON. The server already knows how the UI should look, so it sends the ready-to-insert HTML.
 
@@ -206,10 +206,10 @@ That distinction is important. Full pages are for navigation. Fragments are for 
 
 It is not the same thing as an ES module. The name is easy to confuse because both mention JavaScript, but they solve different problems.
 
-| Thing | File type | Purpose |
-| --- | --- | --- |
-| EJS template | `.ejs` | Server-side HTML template with embedded JavaScript expressions. |
-| ES module | usually `.js` or `.mjs` | JavaScript module syntax using `import` and `export`. |
+| Thing        | File type               | Purpose                                                         |
+| ------------ | ----------------------- | --------------------------------------------------------------- |
+| EJS template | `.ejs`                  | Server-side HTML template with embedded JavaScript expressions. |
+| ES module    | usually `.js` or `.mjs` | JavaScript module syntax using `import` and `export`.           |
 
 EJS files are not imported by the browser. Express renders them on the server, turns them into HTML strings, and sends that HTML to the browser.
 
@@ -374,11 +374,7 @@ Use this pattern:
 Example:
 
 ```html
-<button
-  hx-get="/api/example"
-  hx-target="#example-region"
-  hx-swap="innerHTML"
->
+<button hx-get="/api/example" hx-target="#example-region" hx-swap="innerHTML">
   Load example
 </button>
 ```
@@ -387,7 +383,9 @@ Server route:
 
 ```js
 app.get("/api/example", requireAuth, (req, res) => {
-  renderFragment(req, res, "partials/example", { value: "Rendered on the server" });
+  renderFragment(req, res, "partials/example", {
+    value: "Rendered on the server",
+  });
 });
 ```
 
