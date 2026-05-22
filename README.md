@@ -14,6 +14,17 @@ The key idea is simple: the browser sends normal HTTP requests, and the server r
 
 ## Quick Start
 
+You start one server only.
+
+There is no separate Vite/React/frontend dev server in this project. Express serves everything:
+
+- full pages such as `/login` and `/dashboard`
+- htmx fragment routes such as `/api/search` and `/api/widget/:id`
+- static CSS from `public/`
+- the official htmx browser script from `/vendor/htmx.min.js`
+
+The browser receives HTML from that same Express server and htmx swaps fragments into the current page.
+
 Install dependencies:
 
 ```bash
@@ -41,6 +52,8 @@ Demo accounts:
 admin / admin123
 user / user123
 ```
+
+For htmx attribute syntax and feature-by-feature examples, see [HTMX_REFERENCE.md](./HTMX_REFERENCE.md).
 
 ## What The Product Demonstrates
 
@@ -147,7 +160,16 @@ That distinction is important. Full pages are for navigation. Fragments are for 
 
 ## Why All The View Files Are `.ejs`
 
-`.ejs` means Embedded JavaScript template. These files are not browser JavaScript modules. They are server-side templates.
+`.ejs` means Embedded JavaScript template.
+
+It is not the same thing as an ES module. The name is easy to confuse because both mention JavaScript, but they solve different problems.
+
+| Thing | File type | Purpose |
+| --- | --- | --- |
+| EJS template | `.ejs` | Server-side HTML template with embedded JavaScript expressions. |
+| ES module | usually `.js` or `.mjs` | JavaScript module syntax using `import` and `export`. |
+
+EJS files are not imported by the browser. Express renders them on the server, turns them into HTML strings, and sends that HTML to the browser.
 
 EJS lets the server write HTML with small bits of dynamic logic:
 
@@ -160,6 +182,8 @@ It also supports includes, which is why partials work like server-side component
 ```ejs
 <%- include("partials/theme-toggle") %>
 ```
+
+This is "embedded JavaScript in HTML templates", not "embedded CSS/style in JS." CSS still lives in `public/css/style.css`.
 
 We use EJS here because it fits the htmx style well:
 
@@ -208,6 +232,8 @@ But then we would update imports, exports, and possibly some test setup. htmx do
 ## Is EJS/CommonJS The Common Practice In htmx?
 
 The common htmx practice is not "use EJS" or "use CommonJS."
+
+htmx is backend-agnostic. It does not know or care whether the server used EJS, JSX, Blade, Django templates, Rails ERB, Go templates, or something else. htmx only receives HTML in the browser.
 
 The common practice is:
 
