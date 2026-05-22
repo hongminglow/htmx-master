@@ -1,0 +1,67 @@
+<div id="data-table" class="sortable-region">
+  <% const statuses = ["all", "active", "paused", "draft"]; %>
+  <% const columns = [
+    { key: "name", label: "Name" },
+    { key: "owner", label: "Owner" },
+    { key: "status", label: "Status" },
+    { key: "score", label: "Score" },
+    { key: "volume", label: "Volume" }
+  ]; %>
+
+  <div class="filter-row">
+    <label class="field compact-field">
+      <span>Status filter</span>
+      <select
+        id="data-filter"
+        name="filter"
+        hx-get="/api/data?sort=<%= table.sort %>&order=<%= table.order %>"
+        hx-trigger="change"
+        hx-target="#data-table"
+        hx-swap="outerHTML transition:true"
+        hx-include="#data-filter"
+      >
+        <% statuses.forEach((status) => { %>
+          <option value="<%= status %>" <% if (table.filter === status) { %>selected<% } %>><%= status %></option>
+        <% }) %>
+      </select>
+    </label>
+    <span class="mono-label"><%= table.rows.length %> rows</span>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <% columns.forEach((column) => { %>
+            <% const nextOrder = table.sort === column.key && table.order === "asc" ? "desc" : "asc"; %>
+            <th>
+              <button
+                class="sort-button <%= table.sort === column.key ? "is-active" : "" %>"
+                type="button"
+                hx-get="/api/data?sort=<%= column.key %>&order=<%= nextOrder %>&filter=<%= table.filter %>"
+                hx-target="#data-table"
+                hx-swap="outerHTML transition:true"
+              >
+                <%= column.label %>
+                <% if (table.sort === column.key) { %>
+                  <span><%= table.order === "asc" ? "asc" : "desc" %></span>
+                <% } %>
+              </button>
+            </th>
+          <% }) %>
+        </tr>
+      </thead>
+      <tbody>
+        <% table.rows.forEach((row) => { %>
+          <tr>
+            <td><strong><%= row.name %></strong></td>
+            <td><%= row.owner %></td>
+            <td><span class="badge badge-<%= row.status %>"><%= row.status %></span></td>
+            <td><%= row.score %></td>
+            <td><%= row.volume.toLocaleString("en-US") %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

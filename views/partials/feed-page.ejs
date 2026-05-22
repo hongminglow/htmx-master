@@ -1,0 +1,23 @@
+<% activities.forEach((activity) => { %>
+  <article class="feed-item">
+    <span class="feed-dot" aria-hidden="true"></span>
+    <div>
+      <strong><%= activity.action %></strong>
+      <span><%= activity.actor %> - <%= activity.time %></span>
+    </div>
+  </article>
+<% }) %>
+
+<% if (hasMore) { %>
+  <div
+    class="feed-sentinel"
+    hx-get="/api/feed?page=<%= nextPage %>"
+    hx-trigger="revealed"
+    hx-swap="afterend"
+    hx-indicator="#feed-spinner"
+  >
+    <span>Load more</span>
+  </div>
+<% } else { %>
+  <div class="feed-end">End of activity stream</div>
+<% } %>

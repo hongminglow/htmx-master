@@ -1,0 +1,16 @@
+<article class="stat-counter">
+  <span>Requests</span>
+  <strong><%= stats.requests.toLocaleString("en-US") %></strong>
+</article>
+<article class="stat-counter">
+  <span>Swaps</span>
+  <strong><%= stats.swaps.toLocaleString("en-US") %></strong>
+</article>
+<article class="stat-counter">
+  <span>Active users</span>
+  <strong><%= stats.activeUsers %></strong>
+</article>
+<article class="stat-counter">
+  <span>Success</span>
+  <strong><%= stats.successRate.toFixed(1) %>%</strong>
+</article>

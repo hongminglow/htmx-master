@@ -1,0 +1,20 @@
+<main class="auth-shell">
+  <section class="auth-visual" aria-labelledby="auth-title">
+    <div class="auth-visual__grid" aria-hidden="true"></div>
+    <div class="auth-visual__content">
+      <p class="eyebrow">HTML over the wire</p>
+      <h1 id="auth-title">htmx Unleashed</h1>
+      <p class="lede">A full interface built from server-rendered fragments, HTML attributes, and vanilla CSS.</p>
+      <div class="auth-proof" aria-label="Demo credentials">
+        <span>admin / admin123</span>
+        <span>user / user123</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="auth-panel" aria-label="Authentication demo">
+    <div id="auth-form-container">
+      <%- include("partials/login-form") %>
+    </div>
+  </section>
+</main>

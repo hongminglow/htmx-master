@@ -1,0 +1,17 @@
+<div id="polling-panel" class="polling-panel">
+  <% if (pollingState === "running") { %>
+    <div
+      id="polling-stats"
+      class="stats-grid"
+      hx-get="/api/stats"
+      hx-trigger="every 2s"
+      hx-swap="innerHTML"
+    >
+      <%- include("stats-counters", { stats }) %>
+    </div>
+    <button class="button button-ghost" type="button" hx-get="/api/polling?state=paused" hx-target="#polling-panel" hx-swap="outerHTML transition:true">Pause polling</button>
+  <% } else { %>
+    <div class="empty-state strong">Polling is paused. Resume to reattach the timed htmx trigger.</div>
+    <button class="button button-primary" type="button" hx-get="/api/polling?state=running" hx-target="#polling-panel" hx-swap="outerHTML transition:true">Resume polling</button>
+  <% } %>
+</div>

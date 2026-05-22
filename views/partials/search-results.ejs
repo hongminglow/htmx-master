@@ -1,0 +1,15 @@
+<% if (!query) { %>
+  <div class="empty-state">Start typing to query server-rendered search results.</div>
+<% } else if (!results.length) { %>
+  <div class="empty-state">No feature matched "<%= query %>".</div>
+<% } else { %>
+  <% results.forEach((result) => { %>
+    <article class="result-row">
+      <span class="badge badge-neutral"><%= result.group %></span>
+      <div>
+        <strong><%- highlightText(result.title, query) %></strong>
+        <p><%- highlightText(result.description, query) %></p>
+      </div>
+    </article>
+  <% }) %>
+<% } %>

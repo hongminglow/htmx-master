@@ -1,0 +1,107 @@
+<div class="app-shell">
+  <div
+    id="theme-style-listener"
+    class="sr-only"
+    hx-get="/api/preferences/theme-style"
+    hx-trigger="themeChanged from:body"
+    hx-target="#theme-vars"
+    hx-swap="outerHTML"
+    aria-hidden="true"
+  ></div>
+
+  <aside class="sidebar" aria-label="Showcase navigation">
+    <a class="brand-lockup" href="#top" aria-label="htmx Unleashed home">
+      <span class="brand-mark">hx</span>
+      <span>
+        <strong>htmx Unleashed</strong>
+        <small>fragment lab</small>
+      </span>
+    </a>
+
+    <nav class="side-nav">
+      <a href="#widgets">Lazy widgets</a>
+      <a href="#feed">Infinite feed</a>
+      <a href="#search">Live search</a>
+      <a href="#crud">CRUD</a>
+      <a href="#tabs">Tabs</a>
+      <a href="#polling">Polling</a>
+      <a href="#modal">Modal</a>
+      <a href="#toast">Toast</a>
+      <a href="#sorting">Sort and filter</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="mono-label">Signed in</span>
+      <strong><%= currentUser.name %></strong>
+      <span><%= currentUser.role %></span>
+    </div>
+  </aside>
+
+  <main class="workspace" id="top">
+    <header class="workspace-header">
+      <div>
+        <p class="eyebrow">Express + EJS + htmx</p>
+        <h1>Server-rendered interactivity without a client framework.</h1>
+      </div>
+      <div class="header-actions">
+        <%- include("partials/theme-toggle") %>
+        <form hx-post="/auth/logout" hx-target="body" hx-swap="outerHTML transition:true">
+          <button class="button button-ghost" type="submit">Log out</button>
+        </form>
+      </div>
+    </header>
+
+    <section class="intro-band" aria-label="Showcase scope">
+      <div>
+        <span class="mono-label">Coverage</span>
+        <strong>GET, POST, PUT, DELETE, polling, OOB swaps, server events</strong>
+      </div>
+      <div>
+        <span class="mono-label">Client code</span>
+        <strong>official htmx and CSS only</strong>
+      </div>
+      <div>
+        <span class="mono-label">Response format</span>
+        <strong>HTML fragments, not JSON</strong>
+      </div>
+    </section>
+
+    <section id="widgets" class="showcase-section">
+      <%- include("partials/widgets") %>
+    </section>
+
+    <section id="feed" class="showcase-section two-column">
+      <%- include("partials/infinite-scroll") %>
+    </section>
+
+    <section id="search" class="showcase-section">
+      <%- include("partials/live-search") %>
+    </section>
+
+    <section id="crud" class="showcase-section">
+      <%- include("partials/crud-table") %>
+    </section>
+
+    <section id="tabs" class="showcase-section">
+      <%- include("partials/tabs") %>
+    </section>
+
+    <section id="polling" class="showcase-section">
+      <%- include("partials/polling") %>
+    </section>
+
+    <section id="modal" class="showcase-section">
+      <%- include("partials/modal") %>
+    </section>
+
+    <section id="toast" class="showcase-section">
+      <%- include("partials/toast") %>
+    </section>
+
+    <section id="sorting" class="showcase-section">
+      <%- include("partials/sortable-table") %>
+    </section>
+  </main>
+
+  <div id="modal-container" aria-live="polite"></div>
+</div>

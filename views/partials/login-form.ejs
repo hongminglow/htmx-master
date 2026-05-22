@@ -1,0 +1,79 @@
+<div class="form-header">
+  <p class="eyebrow">Auth demo</p>
+  <h2>Sign in with server-side validation</h2>
+  <p>Every field below talks to the server through htmx attributes.</p>
+</div>
+
+<form class="stacked-form" hx-post="/auth/login" hx-target="#login-result" hx-swap="innerHTML" hx-indicator="#login-spinner">
+  <label class="field">
+    <span>Username</span>
+    <input
+      name="username"
+      autocomplete="username"
+      placeholder="admin"
+      required
+      hx-get="/auth/check-username"
+      hx-trigger="keyup changed delay:500ms"
+      hx-target="#username-status"
+    >
+  </label>
+  <div id="username-status" class="field-feedback">Type a demo username to check availability.</div>
+
+  <label class="field">
+    <span>Password</span>
+    <input
+      name="password"
+      type="password"
+      autocomplete="current-password"
+      placeholder="admin123"
+      required
+      hx-post="/auth/password-strength"
+      hx-trigger="keyup changed delay:300ms"
+      hx-target="#password-strength"
+    >
+  </label>
+  <div id="password-strength" class="strength strength-empty">
+    <span></span>
+    <strong>Waiting for input</strong>
+  </div>
+
+  <label class="check-row">
+    <input
+      type="checkbox"
+      name="remember"
+      value="true"
+      hx-get="/auth/remember-me-info"
+      hx-target="#remember-info"
+      hx-swap="innerHTML transition:true"
+    >
+    <span>Remember this browser</span>
+  </label>
+  <div id="remember-info" class="field-feedback muted">Toggle to load session policy copy from the server.</div>
+
+  <div class="form-actions">
+    <button class="button button-primary" type="submit">Sign in</button>
+    <span id="login-spinner" class="spinner" aria-label="Signing in"></span>
+  </div>
+  <div id="login-result" aria-live="polite"></div>
+</form>
+
+<div class="divider"><span>or</span></div>
+
+<button
+  class="button button-ghost full-width"
+  type="button"
+  hx-get="/auth/register/step/1"
+  hx-target="#auth-form-container"
+  hx-swap="innerHTML transition:true"
+>
+  Open registration wizard
+</button>
+
+<details class="code-panel">
+  <summary>htmx attributes in this auth form</summary>
+  <pre><code>&lt;form hx-post="/auth/login" hx-target="#login-result"&gt;
+&lt;input hx-get="/auth/check-username"
+       hx-trigger="keyup changed delay:500ms"&gt;
+&lt;input hx-post="/auth/password-strength"
+       hx-trigger="keyup changed delay:300ms"&gt;</code></pre>
+</details>

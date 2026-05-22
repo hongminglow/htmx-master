@@ -1,0 +1,21 @@
+<div class="wizard">
+  <div class="form-header">
+    <p class="eyebrow">Step <%= step %> of <%= totalSteps %></p>
+    <h2>Set password details</h2>
+  </div>
+  <div class="progress"><span style="width: <%= progress %>"></span></div>
+
+  <label class="field">
+    <span>Password</span>
+    <input name="password" type="password" placeholder="Use a strong demo password">
+  </label>
+  <label class="field">
+    <span>Confirm password</span>
+    <input name="confirmPassword" type="password" placeholder="Repeat password">
+  </label>
+
+  <div class="form-actions split">
+    <button class="button button-ghost" type="button" hx-get="/auth/register/step/1" hx-target="#auth-form-container" hx-swap="innerHTML transition:true">Back</button>
+    <button class="button button-primary" type="button" hx-get="/auth/register/step/3" hx-target="#auth-form-container" hx-swap="innerHTML transition:true">Next</button>
+  </div>
+</div>

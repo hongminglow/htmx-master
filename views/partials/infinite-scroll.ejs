@@ -1,0 +1,24 @@
+<div>
+  <div class="section-heading compact">
+    <div>
+      <p class="eyebrow">hx-trigger="revealed"</p>
+      <h2>Infinite activity feed</h2>
+    </div>
+    <p>The sentinel at the bottom requests the next page when it is revealed.</p>
+  </div>
+
+  <details class="code-panel">
+    <summary>Revealed trigger</summary>
+    <pre><code>&lt;div hx-get="/api/feed?page=2"
+     hx-trigger="revealed"
+     hx-swap="afterend"
+     hx-indicator="#feed-spinner"&gt;&lt;/div&gt;</code></pre>
+  </details>
+</div>
+
+<div class="feed-panel">
+  <div id="feed-list" class="feed-list">
+    <%- include("feed-page", feed) %>
+  </div>
+  <span id="feed-spinner" class="spinner feed-spinner" aria-label="Loading more feed items"></span>
+</div>

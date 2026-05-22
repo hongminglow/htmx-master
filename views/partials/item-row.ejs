@@ -1,0 +1,29 @@
+<tr id="item-<%= item.id %>" class="crud-row">
+  <td><strong><%= item.name %></strong></td>
+  <td><%= item.owner %></td>
+  <td><span class="badge badge-<%= statusClass(item.status) %>"><%= item.status %></span></td>
+  <td><%= item.updated %></td>
+  <td class="table-actions">
+    <button
+      class="icon-button"
+      type="button"
+      title="Edit row"
+      hx-get="/api/items/<%= item.id %>/edit"
+      hx-target="closest tr"
+      hx-swap="outerHTML transition:true"
+    >
+      Edit
+    </button>
+    <button
+      class="icon-button danger"
+      type="button"
+      title="Delete row"
+      hx-delete="/api/items/<%= item.id %>"
+      hx-target="closest tr"
+      hx-swap="outerHTML swap:500ms"
+      hx-confirm="Delete this row?"
+    >
+      Delete
+    </button>
+  </td>
+</tr>

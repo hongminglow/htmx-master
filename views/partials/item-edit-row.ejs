@@ -1,0 +1,15 @@
+<tr id="item-<%= item.id %>" class="crud-row editing">
+  <td colspan="5">
+    <form class="edit-row-form" hx-put="/api/items/<%= item.id %>" hx-target="closest tr" hx-swap="outerHTML transition:true">
+      <input name="name" value="<%= item.name %>" aria-label="Item name">
+      <input name="owner" value="<%= item.owner %>" aria-label="Owner">
+      <select name="status" aria-label="Status">
+        <% ["Draft", "Review", "Active"].forEach((status) => { %>
+          <option <% if (status === item.status) { %>selected<% } %>><%= status %></option>
+        <% }) %>
+      </select>
+      <button class="button button-primary" type="submit">Save</button>
+      <button class="button button-ghost" type="button" hx-get="/api/items" hx-target="#crud" hx-swap="innerHTML transition:true">Cancel</button>
+    </form>
+  </td>
+</tr>

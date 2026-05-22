@@ -1,0 +1,32 @@
+<div class="section-heading">
+  <div>
+    <p class="eyebrow">HX-Trigger response header</p>
+    <h2>Server-triggered toast notifications</h2>
+  </div>
+  <p>The action returns no body. The response header raises an event that another htmx listener uses to fetch the toast.</p>
+</div>
+
+<div class="toast-demo">
+  <div class="button-row">
+    <button class="button button-primary" type="button" hx-post="/api/toast/trigger?kind=success" hx-swap="none">Trigger success toast</button>
+    <button class="button button-ghost" type="button" hx-post="/api/toast/trigger?kind=warning" hx-swap="none">Trigger warning toast</button>
+  </div>
+  <div
+    id="toast-list"
+    class="toast-list"
+    hx-get="/api/toast/latest"
+    hx-trigger="showToast from:body"
+    hx-swap="afterbegin"
+    aria-live="polite"
+  ></div>
+</div>
+
+<details class="code-panel">
+  <summary>Header event listener</summary>
+  <pre><code>POST /api/toast/trigger
+HX-Trigger: showToast
+
+&lt;div hx-get="/api/toast/latest"
+     hx-trigger="showToast from:body"
+     hx-swap="afterbegin"&gt;&lt;/div&gt;</code></pre>
+</details>

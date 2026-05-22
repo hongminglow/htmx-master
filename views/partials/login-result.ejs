@@ -1,0 +1,4 @@
+<div class="alert alert-<%= state %>" <% if (state === "success") { %>hx-get="/dashboard" hx-trigger="load delay:450ms" hx-target="body" hx-swap="outerHTML transition:true"<% } %>>
+  <strong><%= title %></strong>
+  <span><%= message %></span>
+</div>

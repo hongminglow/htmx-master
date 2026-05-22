@@ -1,0 +1,10 @@
+<button
+  id="theme-switcher"
+  class="button button-ghost"
+  type="button"
+  hx-put="/api/preferences/theme"
+  hx-target="#theme-switcher"
+  hx-swap="outerHTML"
+>
+  <%= theme === "light" ? "Dark mode" : "Light mode" %>
+</button>

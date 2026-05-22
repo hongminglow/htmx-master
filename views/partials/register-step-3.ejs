@@ -1,0 +1,28 @@
+<div class="wizard">
+  <div class="form-header">
+    <p class="eyebrow">Step <%= step %> of <%= totalSteps %></p>
+    <h2>Choose interface defaults</h2>
+  </div>
+  <div class="progress"><span style="width: <%= progress %>"></span></div>
+
+  <form class="stacked-form" hx-post="/auth/register" hx-target="#registration-result" hx-swap="innerHTML">
+    <label class="field">
+      <span>Display name</span>
+      <input name="displayName" placeholder="Demo Operator">
+    </label>
+    <label class="field">
+      <span>Preferred workspace</span>
+      <select name="workspace">
+        <option>Developer console</option>
+        <option>Operations board</option>
+        <option>Content desk</option>
+      </select>
+    </label>
+
+    <div class="form-actions split">
+      <button class="button button-ghost" type="button" hx-get="/auth/register/step/2" hx-target="#auth-form-container" hx-swap="innerHTML transition:true">Back</button>
+      <button class="button button-primary" type="submit">Finish</button>
+    </div>
+    <div id="registration-result" aria-live="polite"></div>
+  </form>
+</div>

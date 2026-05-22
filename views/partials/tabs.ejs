@@ -1,0 +1,52 @@
+<div id="tab-demo">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">On-demand tabs</p>
+      <h2>Tabs loaded from the server</h2>
+    </div>
+    <p>The active tab, panel content, and URL hint are all returned as HTML.</p>
+  </div>
+
+  <% const tabs = [
+    { id: "overview", label: "Overview" },
+    { id: "lifecycle", label: "Lifecycle" },
+    { id: "forms", label: "Forms" },
+    { id: "headers", label: "Headers" }
+  ]; %>
+
+  <div class="tab-list" role="tablist" aria-label="htmx demo tabs">
+    <% tabs.forEach((tab) => { %>
+      <button
+        class="tab-button <%= activeTab === tab.id ? "is-active" : "" %>"
+        type="button"
+        role="tab"
+        aria-selected="<%= activeTab === tab.id ? "true" : "false" %>"
+        hx-get="/api/tabs/<%= tab.id %>"
+        hx-target="#tab-demo"
+        hx-swap="outerHTML transition:true"
+        hx-push-url="/dashboard?tab=<%= tab.id %>"
+      >
+        <%= tab.label %>
+      </button>
+    <% }) %>
+  </div>
+
+  <div id="tab-content" class="tab-content">
+    <span class="mono-label"><%= tabContent.eyebrow %></span>
+    <h3><%= tabContent.title %></h3>
+    <p><%= tabContent.body %></p>
+    <ul class="fact-list">
+      <% tabContent.facts.forEach((fact) => { %>
+        <li><%= fact %></li>
+      <% }) %>
+    </ul>
+  </div>
+
+  <details class="code-panel">
+    <summary>Tab request</summary>
+    <pre><code>&lt;button hx-get="/api/tabs/forms"
+        hx-target="#tab-demo"
+        hx-swap="outerHTML transition:true"
+        hx-push-url="/dashboard?tab=forms"&gt;</code></pre>
+  </details>
+</div>

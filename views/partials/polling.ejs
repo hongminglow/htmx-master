@@ -1,0 +1,16 @@
+<div class="section-heading">
+  <div>
+    <p class="eyebrow">hx-trigger="every 2s"</p>
+    <h2>Live polling stats</h2>
+  </div>
+  <p>Periodic htmx requests refresh only the counters, while the pause control swaps the polling panel itself.</p>
+</div>
+
+<%- include("polling-panel", { pollingState, stats }) %>
+
+<details class="code-panel">
+  <summary>Timed trigger</summary>
+  <pre><code>&lt;div hx-get="/api/stats"
+     hx-trigger="every 2s"
+     hx-swap="innerHTML"&gt;</code></pre>
+</details>
