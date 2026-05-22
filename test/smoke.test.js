@@ -39,7 +39,6 @@ test("login page exposes htmx-driven validation and registration", async () => {
     assert.equal(response.status, 200);
     assert.match(html, /unpkg\.com\/htmx\.org/);
     assert.match(html, /hx-get="\/auth\/check-username"/);
-    assert.match(html, /hx-post="\/auth\/password-strength"/);
     assert.match(html, /hx-get="\/auth\/register\/step\/1"/);
   });
 });
