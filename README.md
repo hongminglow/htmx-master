@@ -105,6 +105,20 @@ The browser is not responsible for rebuilding the UI from JSON. The server alrea
 .
 ├── server.js
 ├── package.json
+├── src/
+│   ├── app.js
+│   ├── data/
+│   │   └── demoStore.js
+│   ├── lib/
+│   │   ├── listen.js
+│   │   ├── rendering.js
+│   │   └── theme.js
+│   ├── middleware/
+│   │   └── auth.js
+│   └── routes/
+│       ├── api.js
+│       ├── auth.js
+│       └── dashboard.js
 ├── public/
 │   └── css/
 │       └── style.css
@@ -113,21 +127,49 @@ The browser is not responsible for rebuilding the UI from JSON. The server alrea
 │   ├── login.ejs
 │   ├── dashboard.ejs
 │   └── partials/
-│       ├── login-form.ejs
-│       ├── widgets.ejs
-│       ├── crud-table.ejs
-│       ├── tabs.ejs
-│       ├── polling.ejs
-│       ├── modal.ejs
-│       ├── toast.ejs
-│       └── ...
+│       ├── auth/
+│       ├── crud/
+│       ├── dashboard/
+│       ├── data/
+│       ├── feed/
+│       ├── modal/
+│       ├── search/
+│       └── toast/
 └── test/
+    ├── architecture.test.js
     └── smoke.test.js
 ```
 
+The root `server.js` is intentionally small. It imports the configured app from `src/app.js`, starts the HTTP listener when run directly, and exports the app for tests.
+
+The `src/` folder owns server behavior:
+
+- `src/app.js`: Express app setup, middleware, static files, route registration.
+- `src/data/demoStore.js`: in-memory demo data and state update helpers.
+- `src/routes/auth.js`: login, logout, validation, and registration wizard routes.
+- `src/routes/dashboard.js`: root redirect and full dashboard page.
+- `src/routes/api.js`: htmx fragment endpoints.
+- `src/middleware/auth.js`: auth guard for protected routes and htmx redirects.
+- `src/lib/rendering.js`: shared full-page and fragment render helpers.
+- `src/lib/theme.js`: dark/light CSS variable generation.
+- `src/lib/listen.js`: port fallback logic for local startup.
+
+The `views/` folder owns server-rendered HTML:
+
+- `views/layout.ejs`: shared HTML document shell.
+- `views/login.ejs` and `views/dashboard.ejs`: full-page views.
+- `views/partials/auth`: login, validation, remember-me, registration wizard.
+- `views/partials/dashboard`: widgets, tabs, polling, theme toggle.
+- `views/partials/crud`: CRUD table and row fragments.
+- `views/partials/search`: live search form and results.
+- `views/partials/feed`: infinite scroll feed.
+- `views/partials/modal`: server-loaded modal.
+- `views/partials/toast`: server-triggered toast UI.
+- `views/partials/data`: sortable and filterable data table.
+
 ## How Rendering Works
 
-There are two render paths in `server.js`.
+There are two render paths in `src/lib/rendering.js`.
 
 `renderPage(req, res, view, data)` renders a complete page:
 
@@ -180,7 +222,7 @@ EJS lets the server write HTML with small bits of dynamic logic:
 It also supports includes, which is why partials work like server-side components:
 
 ```ejs
-<%- include("partials/theme-toggle") %>
+<%- include("partials/dashboard/theme-toggle") %>
 ```
 
 This is "embedded JavaScript in HTML templates", not "embedded CSS/style in JS." CSS still lives in `public/css/style.css`.
@@ -249,7 +291,7 @@ This repo uses EJS and CommonJS because they are lightweight and direct for an E
 
 ### Server owns UI state
 
-Demo data lives in `server.js`:
+Demo data lives in `src/data/demoStore.js`:
 
 - users
 - items
@@ -273,12 +315,13 @@ Partials:
 - Render small swappable regions.
 - Can be returned by `/api/...` routes.
 - Keep each htmx feature isolated.
+- Are grouped by feature area under `views/partials/*`.
 
 If you are coming from React, think of partials as server-rendered components that can also be used as HTTP responses.
 
 ### Routes return HTML instead of JSON
 
-Example: `/api/search` filters the search corpus and renders `views/partials/search-results.ejs`.
+Example: `/api/search` filters the search corpus and renders `views/partials/search/search-results.ejs`.
 
 The browser does not receive:
 

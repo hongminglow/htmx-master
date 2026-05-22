@@ -444,20 +444,20 @@ res.send(`
 
 | Feature | Main files | Main htmx syntax |
 | --- | --- | --- |
-| Login | `views/partials/login-form.ejs`, `server.js` | `hx-post`, `hx-target`, `hx-indicator`, `HX-Redirect` |
-| Username check | `login-form.ejs`, `username-status.ejs` | `hx-get`, `hx-trigger="keyup changed delay:500ms"` |
-| Password strength | `login-form.ejs`, `password-strength.ejs` | `hx-post`, `hx-trigger="keyup changed delay:300ms"` |
-| Registration wizard | `register-step-*.ejs` | `hx-get`, `hx-target`, `hx-swap` |
-| Lazy widgets | `widgets.ejs`, `widget-content.ejs` | `hx-get`, `hx-trigger="load"`, `hx-indicator` |
-| Infinite feed | `infinite-scroll.ejs`, `feed-page.ejs` | `hx-trigger="revealed"`, `hx-swap="afterend"` |
-| Live search | `live-search.ejs`, `search-results.ejs` | `hx-get`, `keyup changed delay`, `hx-target` |
-| CRUD | `crud-table.ejs`, `item-row.ejs`, `item-edit-row.ejs` | `hx-post`, `hx-put`, `hx-delete`, `hx-confirm`, `hx-swap-oob` |
-| Tabs | `tabs.ejs` | `hx-get`, `hx-target`, `hx-swap`, `hx-push-url` |
-| Polling | `polling.ejs`, `polling-panel.ejs` | `hx-trigger="every 2s"` |
-| Modal | `modal.ejs`, `modal-dialog.ejs` | `hx-get`, `hx-target`, `hx-swap` |
-| Toast | `toast.ejs`, `toast-item.ejs` | `hx-post`, `hx-swap="none"`, `HX-Trigger`, custom event trigger |
-| Theme | `theme-toggle.ejs`, `dashboard.ejs` | `hx-put`, `HX-Trigger`, `hx-trigger="themeChanged from:body"` |
-| Sort/filter table | `sortable-table.ejs`, `sortable-data-table.ejs` | `hx-get`, `hx-include`, query params, `hx-trigger="change"` |
+| Login | `views/partials/auth/login-form.ejs`, `src/routes/auth.js` | `hx-post`, `hx-target`, `hx-indicator`, `HX-Redirect` |
+| Username check | `views/partials/auth/login-form.ejs`, `views/partials/auth/username-status.ejs` | `hx-get`, `hx-trigger="keyup changed delay:500ms"` |
+| Password strength | `views/partials/auth/login-form.ejs`, `views/partials/auth/password-strength.ejs` | `hx-post`, `hx-trigger="keyup changed delay:300ms"` |
+| Registration wizard | `views/partials/auth/register-step-*.ejs` | `hx-get`, `hx-target`, `hx-swap` |
+| Lazy widgets | `views/partials/dashboard/widgets.ejs`, `views/partials/dashboard/widget-content.ejs` | `hx-get`, `hx-trigger="load"`, `hx-indicator` |
+| Infinite feed | `views/partials/feed/infinite-scroll.ejs`, `views/partials/feed/feed-page.ejs` | `hx-trigger="revealed"`, `hx-swap="afterend"` |
+| Live search | `views/partials/search/live-search.ejs`, `views/partials/search/search-results.ejs` | `hx-get`, `keyup changed delay`, `hx-target` |
+| CRUD | `views/partials/crud/crud-table.ejs`, `views/partials/crud/item-row.ejs`, `views/partials/crud/item-edit-row.ejs` | `hx-post`, `hx-put`, `hx-delete`, `hx-confirm`, `hx-swap-oob` |
+| Tabs | `views/partials/dashboard/tabs.ejs` | `hx-get`, `hx-target`, `hx-swap`, `hx-push-url` |
+| Polling | `views/partials/dashboard/polling.ejs`, `views/partials/dashboard/polling-panel.ejs` | `hx-trigger="every 2s"` |
+| Modal | `views/partials/modal/modal.ejs`, `views/partials/modal/modal-dialog.ejs` | `hx-get`, `hx-target`, `hx-swap` |
+| Toast | `views/partials/toast/toast.ejs`, `views/partials/toast/toast-item.ejs` | `hx-post`, `hx-swap="none"`, `HX-Trigger`, custom event trigger |
+| Theme | `views/partials/dashboard/theme-toggle.ejs`, `views/dashboard.ejs` | `hx-put`, `HX-Trigger`, `hx-trigger="themeChanged from:body"` |
+| Sort/filter table | `views/partials/data/sortable-table.ejs`, `views/partials/data/sortable-data-table.ejs` | `hx-get`, `hx-include`, query params, `hx-trigger="change"` |
 
 ## When To Use htmx Instead Of A JS Framework
 

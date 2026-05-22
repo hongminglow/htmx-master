@@ -44,7 +44,7 @@
         <h1>Server-rendered interactivity without a client framework.</h1>
       </div>
       <div class="header-actions">
-        <%- include("partials/theme-toggle") %>
+        <%- include("partials/dashboard/theme-toggle") %>
         <form hx-post="/auth/logout" hx-target="body" hx-swap="outerHTML transition:true">
           <button class="button button-ghost" type="submit">Log out</button>
         </form>
@@ -67,39 +67,39 @@
     </section>
 
     <section id="widgets" class="showcase-section">
-      <%- include("partials/widgets") %>
+      <%- include("partials/dashboard/widgets") %>
     </section>
 
     <section id="feed" class="showcase-section two-column">
-      <%- include("partials/infinite-scroll") %>
+      <%- include("partials/feed/infinite-scroll") %>
     </section>
 
     <section id="search" class="showcase-section">
-      <%- include("partials/live-search") %>
+      <%- include("partials/search/live-search") %>
     </section>
 
     <section id="crud" class="showcase-section">
-      <%- include("partials/crud-table") %>
+      <%- include("partials/crud/crud-table") %>
     </section>
 
     <section id="tabs" class="showcase-section">
-      <%- include("partials/tabs") %>
+      <%- include("partials/dashboard/tabs") %>
     </section>
 
     <section id="polling" class="showcase-section">
-      <%- include("partials/polling") %>
+      <%- include("partials/dashboard/polling") %>
     </section>
 
     <section id="modal" class="showcase-section">
-      <%- include("partials/modal") %>
+      <%- include("partials/modal/modal") %>
     </section>
 
     <section id="toast" class="showcase-section">
-      <%- include("partials/toast") %>
+      <%- include("partials/toast/toast") %>
     </section>
 
     <section id="sorting" class="showcase-section">
-      <%- include("partials/sortable-table") %>
+      <%- include("partials/data/sortable-table") %>
     </section>
   </main>
 
