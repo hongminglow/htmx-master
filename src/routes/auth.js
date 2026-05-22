@@ -21,11 +21,10 @@ function registerAuthRoutes(app) {
     const user = store.findUser(username);
 
     if (!user || user.password !== password) {
-      res.status(401);
       renderFragment(req, res, "partials/auth/login-result", {
         state: "error",
         title: "Login failed",
-        message: "Try admin/admin123 or user/user123."
+        message: "Check the username and password, then try again."
       });
       return;
     }

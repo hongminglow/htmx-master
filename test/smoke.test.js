@@ -43,6 +43,22 @@ test("login page exposes htmx-driven validation and registration", async () => {
   });
 });
 
+test("failed login returns a visible validation message fragment", async () => {
+  await withServer(async (baseUrl) => {
+    const response = await fetch(`${baseUrl}/auth/login`, {
+      method: "POST",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ username: "admin", password: "wrong-password" })
+    });
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, /role="alert"/);
+    assert.match(html, /Login failed/);
+    assert.match(html, /Check the username and password/);
+  });
+});
+
 test("dashboard keeps htmx behavior attributes after login", async () => {
   await withServer(async (baseUrl) => {
     const login = await fetch(`${baseUrl}/auth/login`, {
