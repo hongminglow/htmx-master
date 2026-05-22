@@ -14,7 +14,7 @@
       <span class="brand-mark">hx</span>
       <span>
         <strong>htmx Unleashed</strong>
-        <small>fragment lab</small>
+        <small>workspace</small>
       </span>
     </a>
 
@@ -40,8 +40,8 @@
   <main class="workspace" id="top">
     <header class="workspace-header">
       <div>
-        <p class="eyebrow">Express + EJS + htmx</p>
-        <h1>Server-rendered interactivity without a client framework.</h1>
+        <p class="eyebrow">Workspace</p>
+        <h1>Interactive operations workspace.</h1>
       </div>
       <div class="header-actions">
         <%- include("partials/dashboard/theme-toggle") %>
@@ -53,16 +53,16 @@
 
     <section class="intro-band" aria-label="Showcase scope">
       <div>
-        <span class="mono-label">Coverage</span>
-        <strong>GET, POST, PUT, DELETE, polling, OOB swaps, server events</strong>
+        <span class="mono-label">Mode</span>
+        <strong>Live dashboard</strong>
       </div>
       <div>
-        <span class="mono-label">Client code</span>
-        <strong>official htmx and CSS only</strong>
+        <span class="mono-label">Session</span>
+        <strong>Signed in as <%= currentUser.name %></strong>
       </div>
       <div>
-        <span class="mono-label">Response format</span>
-        <strong>HTML fragments, not JSON</strong>
+        <span class="mono-label">Data</span>
+        <strong>In-memory workspace</strong>
       </div>
     </section>
 

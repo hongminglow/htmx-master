@@ -1,19 +1,11 @@
 <div>
   <div class="section-heading compact">
     <div>
-      <p class="eyebrow">hx-trigger="revealed"</p>
+      <p class="eyebrow">Activity stream</p>
       <h2>Infinite activity feed</h2>
     </div>
-    <p>The sentinel at the bottom requests the next page when it is revealed.</p>
+    <p>Scroll to the bottom to load more activity.</p>
   </div>
-
-  <details class="code-panel">
-    <summary>Revealed trigger</summary>
-    <pre><code>&lt;div hx-get="/api/feed?page=2"
-     hx-trigger="revealed"
-     hx-swap="afterend"
-     hx-indicator="#feed-spinner"&gt;&lt;/div&gt;</code></pre>
-  </details>
 </div>
 
 <div class="feed-panel">

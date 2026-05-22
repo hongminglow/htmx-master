@@ -25,7 +25,7 @@ function registerAuthRoutes(app) {
       renderFragment(req, res, "partials/auth/login-result", {
         state: "error",
         title: "Login failed",
-        message: "Use admin/admin123 or user/user123 for this demo."
+        message: "Try admin/admin123 or user/user123."
       });
       return;
     }
@@ -41,7 +41,7 @@ function registerAuthRoutes(app) {
     renderFragment(req, res, "partials/auth/login-result", {
       state: "success",
       title: "Session created",
-      message: "Opening the htmx dashboard now."
+      message: "Opening the dashboard now."
     });
   });
 

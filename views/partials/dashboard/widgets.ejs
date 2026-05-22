@@ -1,9 +1,9 @@
 <div class="section-heading">
   <div>
-    <p class="eyebrow">hx-trigger="load"</p>
+    <p class="eyebrow">Dashboard metrics</p>
     <h2>Lazy-loaded dashboard widgets</h2>
   </div>
-  <p>Each metric starts as a skeleton and asks the server for its fragment when it enters the DOM.</p>
+  <p>Metrics load after the workspace opens.</p>
 </div>
 
 <div class="widget-grid">
@@ -24,11 +24,3 @@
     </article>
   <% }) %>
 </div>
-
-<details class="code-panel">
-  <summary>Lazy-load markup</summary>
-  <pre><code>&lt;article hx-get="/api/widget/requests"
-         hx-trigger="load"
-         hx-swap="innerHTML"
-         hx-indicator="#widget-loader"&gt;</code></pre>
-</details>

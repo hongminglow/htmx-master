@@ -1,18 +1,18 @@
 <div class="section-heading">
   <div>
-    <p class="eyebrow">keyup changed delay:300ms</p>
-    <h2>Live search with debounced requests</h2>
+    <p class="eyebrow">Search</p>
+    <h2>Live feature search</h2>
   </div>
-  <p>Search terms are sent as query parameters and the results list returns as HTML.</p>
+  <p>Find available workspace actions and patterns.</p>
 </div>
 
 <div class="search-layout">
   <label class="field search-field">
-    <span>Search htmx features</span>
+    <span>Search features</span>
     <input
       type="search"
       name="q"
-      placeholder="Try swap, trigger, delete, header"
+      placeholder="Try search, row, toast, theme"
       hx-get="/api/search"
       hx-trigger="keyup changed delay:300ms"
       hx-target="#search-results"
@@ -24,11 +24,3 @@
     <%- include("search-results", { query: "", results: [] }) %>
   </div>
 </div>
-
-<details class="code-panel">
-  <summary>Debounced input</summary>
-  <pre><code>&lt;input name="q"
-       hx-get="/api/search"
-       hx-trigger="keyup changed delay:300ms"
-       hx-target="#search-results"&gt;</code></pre>
-</details>

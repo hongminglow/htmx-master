@@ -1,18 +1,11 @@
 <div class="section-heading">
   <div>
-    <p class="eyebrow">Server-loaded modal</p>
-    <h2>Dialog content as a fragment</h2>
+    <p class="eyebrow">Details</p>
+    <h2>Details modal</h2>
   </div>
-  <p>The backdrop and dialog arrive from Express; the close action swaps the modal container back to empty.</p>
+  <p>Open a focused details view without leaving the dashboard.</p>
 </div>
 
 <button class="button button-primary" type="button" hx-get="/api/modal/details" hx-target="#modal-container" hx-swap="innerHTML transition:true">
   Open modal
 </button>
-
-<details class="code-panel">
-  <summary>Modal trigger</summary>
-  <pre><code>&lt;button hx-get="/api/modal/details"
-        hx-target="#modal-container"
-        hx-swap="innerHTML transition:true"&gt;</code></pre>
-</details>

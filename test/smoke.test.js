@@ -44,7 +44,7 @@ test("login page exposes htmx-driven validation and registration", async () => {
   });
 });
 
-test("dashboard contains the planned htmx feature demonstrations after login", async () => {
+test("dashboard keeps htmx behavior attributes after login", async () => {
   await withServer(async (baseUrl) => {
     const login = await fetch(`${baseUrl}/auth/login`, {
       method: "POST",
@@ -67,8 +67,33 @@ test("dashboard contains the planned htmx feature demonstrations after login", a
     assert.match(html, /hx-trigger="revealed"/);
     assert.match(html, /hx-trigger="every 2s"/);
     assert.match(html, /hx-delete="\/api\/items\//);
-    assert.match(html, /hx-swap-oob/);
     assert.match(html, /showToast from:body/);
     assert.match(html, /themeChanged from:body/);
+  });
+});
+
+test("crud item creation returns an out-of-band count update", async () => {
+  await withServer(async (baseUrl) => {
+    const login = await fetch(`${baseUrl}/auth/login`, {
+      method: "POST",
+      redirect: "manual",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ username: "admin", password: "admin123" })
+    });
+    const cookie = login.headers.get("set-cookie");
+
+    const response = await fetch(`${baseUrl}/api/items`, {
+      method: "POST",
+      headers: {
+        cookie,
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({ name: "Queue review", owner: "Nia", status: "Review" })
+    });
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(html, /hx-swap-oob="innerHTML"/);
+    assert.match(html, /Queue review/);
   });
 });

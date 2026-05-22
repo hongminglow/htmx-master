@@ -15,16 +15,16 @@ const users = [
 
 const widgetMap = {
   requests: {
-    label: "Fragment requests",
+    label: "Requests processed",
     value: "18,420",
-    detail: "HTML responses served today",
+    detail: "Workspace actions served today",
     delta: "+12.4%",
     tone: "green"
   },
   swaps: {
-    label: "DOM swaps",
+    label: "UI updates",
     value: "7,834",
-    detail: "Server-rendered updates applied",
+    detail: "Interface regions refreshed",
     delta: "+8.1%",
     tone: "cyan"
   },
@@ -46,54 +46,54 @@ const widgetMap = {
 
 const searchCorpus = [
   {
-    title: "hx-get",
+    title: "Live search",
     group: "Request",
-    description: "Fetches server-rendered HTML and swaps it into a target."
+    description: "Looks up matching features as the user types."
   },
   {
-    title: "hx-post",
+    title: "Form actions",
     group: "Forms",
-    description: "Submits forms without a client framework or JSON ceremony."
+    description: "Submits credentials, registrations, and new rows."
   },
   {
-    title: "hx-put",
-    group: "REST",
-    description: "Updates resources inline while preserving server ownership."
+    title: "Inline editing",
+    group: "Rows",
+    description: "Updates existing records directly in the table."
   },
   {
-    title: "hx-delete",
-    group: "REST",
-    description: "Deletes rows, panels, and records with confirmable actions."
+    title: "Row deletion",
+    group: "Rows",
+    description: "Removes records with a confirmation step."
   },
   {
-    title: "hx-trigger",
+    title: "Automatic refresh",
     group: "Events",
-    description: "Runs requests from load, revealed, change, keyup, or timers."
+    description: "Keeps live counters and feeds current."
   },
   {
-    title: "hx-swap-oob",
-    group: "Fragments",
-    description: "Updates counters and remote UI regions outside the target."
+    title: "Linked count update",
+    group: "Counters",
+    description: "Keeps totals aligned after row changes."
   },
   {
-    title: "HX-Trigger",
-    group: "Headers",
-    description: "Lets the server raise browser events after a response."
+    title: "Notifications",
+    group: "Events",
+    description: "Shows follow-up alerts after an action completes."
   },
   {
-    title: "hx-indicator",
+    title: "Loading feedback",
     group: "Feedback",
-    description: "Connects request state to spinners and skeleton loaders."
+    description: "Shows spinners and skeleton loaders during work."
   }
 ];
 
 const activityFeed = Array.from({ length: 48 }, (_, index) => {
   const actions = [
     "Validated login form",
-    "Rendered search fragment",
-    "Applied out-of-band count update",
-    "Swapped inline edit row",
-    "Refreshed polling metrics",
+    "Updated search results",
+    "Updated item count",
+    "Opened inline edit row",
+    "Refreshed live metrics",
     "Loaded modal details",
     "Sorted dataset by health score",
     "Persisted theme preference"
@@ -117,9 +117,9 @@ const sortableRows = [
 
 const initialItems = [
   { id: 1, name: "Lazy widget pipeline", owner: "Ada", status: "Active", updated: "2 min ago" },
-  { id: 2, name: "OOB counter sync", owner: "Lin", status: "Review", updated: "9 min ago" },
+  { id: 2, name: "Counter sync", owner: "Lin", status: "Review", updated: "9 min ago" },
   { id: 3, name: "Inline table editor", owner: "Max", status: "Active", updated: "18 min ago" },
-  { id: 4, name: "Header-triggered toast", owner: "Tao", status: "Draft", updated: "24 min ago" }
+  { id: 4, name: "Notification trigger", owner: "Tao", status: "Draft", updated: "24 min ago" }
 ];
 
 let items;
@@ -138,8 +138,8 @@ function resetDemoState() {
   };
   latestToast = {
     kind: "info",
-    title: "Server event ready",
-    message: "HX-Trigger can fan out follow-up htmx requests.",
+    title: "Notification ready",
+    message: "Workspace events can publish follow-up alerts.",
     id: Date.now()
   };
 }
@@ -262,28 +262,28 @@ function advanceStats() {
 function tabContent(name) {
   const content = {
     overview: {
-      eyebrow: "Composition",
-      title: "A page can be a state machine without client state.",
-      body: "Each tab is a server-owned fragment. htmx only decides when and where the returned HTML lands.",
-      facts: ["hx-get loads this panel", "hx-target scopes the swap", "hx-push-url can reflect state"]
+      eyebrow: "Overview",
+      title: "Current workspace summary",
+      body: "Use this view to confirm the active surface, navigation state, and current dashboard context.",
+      facts: ["Focused view", "Stable URL", "Current selection"]
     },
     lifecycle: {
-      eyebrow: "Lifecycle",
-      title: "Requests expose loading, settling, and swapping phases.",
-      body: "The CSS hooks make server trips feel native: skeletons show during request, then the new fragment settles in.",
-      facts: ["htmx-request", "htmx-swapping", "htmx-settling"]
+      eyebrow: "Activity",
+      title: "Activity stays visible while work updates.",
+      body: "Loading states, settled panels, and refreshed content keep the workspace readable during changes.",
+      facts: ["Loading state", "Settled content", "Progress feedback"]
     },
     forms: {
       eyebrow: "Forms",
-      title: "Forms stay HTML-first.",
-      body: "Validation, registration steps, inline editing, and deletes all use normal form semantics with htmx attributes.",
-      facts: ["hx-post", "hx-put", "hx-delete"]
+      title: "Forms stay clear and focused.",
+      body: "Validation, registration steps, inline editing, and deletes share the same direct form workflow.",
+      facts: ["Validation", "Registration", "Inline editing"]
     },
     headers: {
-      eyebrow: "Headers",
-      title: "The server can orchestrate secondary UI updates.",
-      body: "HX-Trigger lets one response raise browser events that other htmx listeners use to fetch fresh fragments.",
-      facts: ["HX-Trigger", "from:body", "hx-swap='none'"]
+      eyebrow: "Events",
+      title: "Follow-up UI updates stay coordinated.",
+      body: "Actions can refresh related regions, publish notifications, and keep preferences in sync.",
+      facts: ["Notifications", "Theme sync", "Related updates"]
     }
   };
 
@@ -307,11 +307,11 @@ function setLatestToast(kind) {
   latestToast = {
     id: Date.now(),
     kind,
-    title: kind === "warning" ? "Careful request" : "Server event received",
+    title: kind === "warning" ? "Review needed" : "Notification sent",
     message:
       kind === "warning"
-        ? "This toast was requested after a 204 response header event."
-        : "HX-Trigger fired, and another htmx listener fetched this toast."
+        ? "The workspace published a warning notification."
+        : "The workspace published a success notification."
   };
 }
 

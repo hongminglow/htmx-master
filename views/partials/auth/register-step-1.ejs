@@ -1,13 +1,13 @@
 <div class="wizard">
   <div class="form-header">
     <p class="eyebrow">Step <%= step %> of <%= totalSteps %></p>
-    <h2>Create a demo identity</h2>
+    <h2>Create an identity</h2>
   </div>
   <div class="progress"><span style="width: <%= progress %>"></span></div>
 
   <label class="field">
     <span>Username</span>
-    <input name="username" placeholder="fragment-user">
+    <input name="username" placeholder="workspace-user">
   </label>
   <label class="field">
     <span>Email</span>
@@ -18,11 +18,4 @@
     <button class="button button-ghost" type="button" hx-get="/auth/login-form" hx-target="#auth-form-container" hx-swap="innerHTML transition:true">Back to login</button>
     <button class="button button-primary" type="button" hx-get="/auth/register/step/2" hx-target="#auth-form-container" hx-swap="innerHTML transition:true">Next</button>
   </div>
-
-  <details class="code-panel">
-    <summary>Registration step loading</summary>
-    <pre><code>&lt;button hx-get="/auth/register/step/2"
-        hx-target="#auth-form-container"
-        hx-swap="innerHTML transition:true"&gt;</code></pre>
-  </details>
 </div>

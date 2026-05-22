@@ -1,15 +1,15 @@
 <div class="modal-backdrop">
   <section class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div>
-      <p class="eyebrow">Fragment modal</p>
-      <h2 id="modal-title">This dialog was rendered on the server</h2>
-      <p>There is no client component tree to hydrate. The server returns this HTML, htmx swaps it into the modal container, and CSS handles the entrance.</p>
+      <p class="eyebrow">Workspace details</p>
+      <h2 id="modal-title">Current workspace status</h2>
+      <p>Review session context, activity state, and interface preferences in one place.</p>
     </div>
     <div class="modal-grid">
-      <span>hx-get</span>
-      <span>hx-target</span>
-      <span>innerHTML</span>
-      <span>CSS motion</span>
+      <span>Session active</span>
+      <span>Activity loaded</span>
+      <span>Status healthy</span>
+      <span>Theme synced</span>
     </div>
     <button class="button button-primary" type="button" hx-get="/api/modal/close" hx-target="#modal-container" hx-swap="innerHTML">Close</button>
   </section>

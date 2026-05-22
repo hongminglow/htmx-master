@@ -1,16 +1,16 @@
 <div class="section-heading">
   <div>
-    <p class="eyebrow">POST, PUT, DELETE, OOB</p>
+    <p class="eyebrow">Work items</p>
     <h2>CRUD table with inline editing</h2>
   </div>
-  <p>Rows are added, edited, deleted, and counted through HTML fragments.</p>
+  <p>Create, edit, and remove rows from the workspace.</p>
 </div>
 
 <div class="crud-toolbar">
   <form class="inline-create" hx-post="/api/items" hx-target="#items-body" hx-swap="beforeend">
     <label class="field">
       <span>Item</span>
-      <input name="name" placeholder="New htmx pattern" required>
+      <input name="name" placeholder="New workspace item" required>
     </label>
     <label class="field">
       <span>Owner</span>
@@ -50,13 +50,3 @@
     </tbody>
   </table>
 </div>
-
-<details class="code-panel">
-  <summary>REST verbs and out-of-band counter</summary>
-  <pre><code>&lt;form hx-post="/api/items" hx-target="#items-body" hx-swap="beforeend"&gt;
-&lt;button hx-delete="/api/items/1"
-        hx-target="closest tr"
-        hx-swap="outerHTML swap:500ms"
-        hx-confirm="Delete this row?"&gt;
-&lt;span id="item-count" hx-swap-oob="innerHTML"&gt;5&lt;/span&gt;</code></pre>
-</details>

@@ -1,20 +1,20 @@
 <div id="tab-demo">
   <div class="section-heading">
     <div>
-      <p class="eyebrow">On-demand tabs</p>
-      <h2>Tabs loaded from the server</h2>
+      <p class="eyebrow">Views</p>
+      <h2>Workspace views</h2>
     </div>
-    <p>The active tab, panel content, and URL hint are all returned as HTML.</p>
+    <p>Switch between focused views without leaving the dashboard.</p>
   </div>
 
   <% const tabs = [
     { id: "overview", label: "Overview" },
-    { id: "lifecycle", label: "Lifecycle" },
+    { id: "lifecycle", label: "Activity" },
     { id: "forms", label: "Forms" },
-    { id: "headers", label: "Headers" }
+    { id: "headers", label: "Events" }
   ]; %>
 
-  <div class="tab-list" role="tablist" aria-label="htmx demo tabs">
+  <div class="tab-list" role="tablist" aria-label="Dashboard views">
     <% tabs.forEach((tab) => { %>
       <button
         class="tab-button <%= activeTab === tab.id ? "is-active" : "" %>"
@@ -41,12 +41,4 @@
       <% }) %>
     </ul>
   </div>
-
-  <details class="code-panel">
-    <summary>Tab request</summary>
-    <pre><code>&lt;button hx-get="/api/tabs/forms"
-        hx-target="#tab-demo"
-        hx-swap="outerHTML transition:true"
-        hx-push-url="/dashboard?tab=forms"&gt;</code></pre>
-  </details>
 </div>

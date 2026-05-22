@@ -1,7 +1,7 @@
 <% if (!username) { %>
   <span class="status-note">Enter at least three characters.</span>
 <% } else if (taken) { %>
-  <span class="badge badge-warning"><%= username %> is a demo login</span>
+  <span class="badge badge-warning"><%= username %> is an existing login</span>
 <% } else if (available) { %>
   <span class="badge badge-success"><%= username %> is available</span>
 <% } else { %>

@@ -39,7 +39,7 @@ function registerApiRoutes(app) {
     if (!name || !owner) {
       res.status(422);
       renderFragment(req, res, "partials/crud/form-error", {
-        message: "Name and owner are required before htmx can append the row."
+        message: "Name and owner are required before the row can be added."
       });
       return;
     }
