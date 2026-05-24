@@ -7,10 +7,33 @@ The app uses:
 - Express for HTTP routes and session handling
 - EJS for full-page templates and HTML fragments
 - htmx for browser interactions through HTML attributes
+- A small client script (`public/js/htmx-app.js`) for the four things attributes can't express cleanly: CSRF, custom confirm, global error toast, and JSON-payload event listening
 - Vanilla CSS for layout, themes, loading states, transitions, modal/toast styling, and responsive behavior
 - In-memory demo data for users, CRUD rows, metrics, search results, and feed activity
 
 The key idea is simple: the browser sends normal HTTP requests, and the server responds with HTML, not JSON. htmx decides where that returned HTML should be swapped into the page.
+
+## Why htmx Works This Way
+
+htmx leans into two ideas that frame everything else in this app:
+
+- **HATEOAS — the server returns the next correct UI as HTML.** The client doesn't reconstruct UI from a JSON model. State transitions are encoded directly in the response: which row to replace, what swap mode to use, where to push history. The browser is a renderer of server-driven decisions.
+- **Locality of Behaviour (LoB).** Every htmx attribute lives on the element it controls. The trigger, target, swap, URL, and confirm copy all sit together in the same HTML tag. You read one element and know exactly what it does, instead of jumping between a JSX file, a hook, a reducer, and an API client.
+
+If those two ideas resonate, the rest of the architecture falls out naturally: keep state on the server, return HTML, let small attributes drive the interactions.
+
+## What htmx Costs (And Doesn't)
+
+- **Payload:** htmx 2.0 is ~14 KB gzipped. No bundler, no hydration step, no client-side router. The first HTML response is the rendered UI, not a shell waiting for JavaScript.
+- **Build:** zero. There is no Vite, Webpack, esbuild, or transpiler in this project. `views/` files are plain EJS, served straight by Express.
+- **Mental model:** state lives on the server. UI state that browsers traditionally own (current tab, current sort, current filter) is encoded in the URL or session and re-rendered on every interaction.
+- **Tradeoff:** every interaction is a network round trip. For most CRUD/dashboard interactions that is fine; for editor-style apps where the browser owns a lot of in-flight state, a client framework still wins (see "When htmx Is Not The Right Fit" below).
+
+## Progressive Enhancement
+
+The login form in this repo is a normal `<form action="/auth/login" method="post">` with htmx attributes layered on top. If the htmx script fails to load or JavaScript is disabled, the browser still posts the form and the server still renders the result. This is `htmx`'s most underrated property — it sits **on** HTML rather than replacing it.
+
+That said, not every feature in this showcase degrades to a usable form: lazy widgets, polling, infinite feed, OOB updates, and toasts assume htmx is running. Treat progressive enhancement as a goal you opt into per feature, not a free guarantee.
 
 ## Quick Start
 
@@ -20,7 +43,8 @@ There is no separate Vite/React/frontend dev server in this project. Express ser
 
 - full pages such as `/login` and `/dashboard`
 - htmx fragment routes such as `/api/search` and `/api/widget/:id`
-- static CSS from `public/`
+- static CSS from `public/css/style.css`
+- the small client glue from `public/js/htmx-app.js`
 - the official htmx browser script from `/vendor/htmx.min.js`
 
 The browser receives HTML from that same Express server and htmx swaps fragments into the current page.
@@ -50,7 +74,7 @@ Demo accounts:
 
 ```text
 admin / admin123
-user / user123
+user  / user123
 ```
 
 For htmx attribute syntax and feature-by-feature examples, see [HTMX_REFERENCE.md](./HTMX_REFERENCE.md).
@@ -59,25 +83,30 @@ For htmx attribute syntax and feature-by-feature examples, see [HTMX_REFERENCE.m
 
 This app is structured as a product-style htmx showcase. Each section demonstrates a real interaction pattern.
 
-| Area                 | htmx capability                                       | What it shows                                                                        |
-| -------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Login form           | `hx-post`, `HX-Redirect`, `hx-target`, `hx-indicator` | Submit credentials, show validation errors, and redirect after a successful session. |
-| Username check       | `hx-get`, `hx-trigger="keyup changed delay:500ms"`    | Debounced server validation while typing.                                            |
-| Password strength    | `hx-post`, `hx-trigger="keyup changed delay:300ms"`   | Field-level feedback rendered by the server.                                         |
-| Remember me info     | `hx-get`, `hx-swap="innerHTML transition:true"`       | Toggle-driven explanatory content.                                                   |
-| Registration wizard  | `hx-get`, fragment swaps                              | Multi-step form screens loaded from the server.                                      |
-| Lazy widgets         | `hx-trigger="load"`                                   | Dashboard tiles that hydrate themselves after page load.                             |
-| Infinite feed        | `hx-trigger="revealed"`                               | A sentinel loads the next page when it scrolls into view.                            |
-| Live search          | `hx-get`, debounced triggers                          | Search results update without client-side state management.                          |
-| CRUD table           | `hx-post`, `hx-put`, `hx-delete`, `hx-confirm`        | Add, edit, and delete rows inline.                                                   |
-| Count updates        | `hx-swap-oob`                                         | A row response also updates a separate item count outside the target.                |
-| Tabs                 | `hx-get`, `hx-push-url`, transitions                  | Tab content and active tab state are returned as HTML.                               |
-| Polling stats        | `hx-trigger="every 2s"`                               | Timed refreshes for live counters.                                                   |
-| Polling pause/resume | Fragment replacement                                  | Swapping the polling panel removes or restores the timed trigger.                    |
-| Modal                | `hx-get`, `hx-target`                                 | Server-rendered dialog markup loaded on demand.                                      |
-| Toast                | `HX-Trigger`, `hx-swap="none"`                        | A response header fires an event, then another htmx listener fetches the toast.      |
-| Theme toggle         | `hx-put`, `HX-Trigger`, server session                | The server stores the theme and triggers a CSS variable refresh.                     |
-| Sortable table       | Query params, `hx-include`, `hx-trigger="change"`     | Headers and filters request a re-rendered table region.                              |
+| Area                   | htmx capability                                       | What it shows                                                                        |
+| ---------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Login form             | `hx-post`, `HX-Redirect`, `hx-target`, `hx-indicator` | Submit credentials, show validation errors, redirect after a successful session.     |
+| Username check         | `hx-get`, debounced trigger, `hx-sync`                | Debounced server validation; old in-flight requests are cancelled on new keystrokes. |
+| Password strength      | `hx-post`, debounced trigger                          | Field-level feedback rendered by the server.                                         |
+| Remember-me info       | `hx-get`, `hx-swap="innerHTML transition:true"`       | Toggle-driven explanatory content with a View Transition.                            |
+| Registration wizard    | `hx-get`, fragment swaps                              | Multi-step form screens loaded from the server.                                      |
+| Lazy widgets           | `hx-trigger="load"`                                   | Dashboard tiles that hydrate themselves after page load.                             |
+| Infinite feed          | `hx-trigger="revealed"`                               | A sentinel loads the next page when it scrolls into view.                            |
+| Live search            | `hx-get`, debounced trigger, `hx-sync`                | Search results without client-side state and without race conditions.                |
+| CRUD table             | `hx-post`, `hx-put`, `hx-delete`, `hx-confirm`        | Add, edit, and delete rows inline.                                                   |
+| Custom delete confirm  | `htmx:confirm` event                                  | Replaces `window.confirm()` with a styled dialog.                                    |
+| Form-error retarget    | `HX-Reswap`, `HX-Retarget`                            | Server overrides the swap target on validation failure.                              |
+| Count updates          | `hx-swap-oob`                                         | A row response also updates a separate item count outside the target.                |
+| Tabs                   | `hx-get`, `hx-push-url`, transitions                  | Tab content and active tab state are returned as HTML.                               |
+| Polling stats          | `hx-trigger="every 2s"`                               | Timed refreshes for live counters.                                                   |
+| Polling pause/resume   | Fragment replacement                                  | Swapping the polling panel removes or restores the timed trigger.                    |
+| Modal                  | `hx-get`, `hx-target`                                 | Server-rendered dialog markup loaded on demand.                                      |
+| Toast (string trigger) | `HX-Trigger`, `hx-swap="none"`                        | A response header fires an event, then another htmx listener fetches the toast.      |
+| Toast (JSON payload)   | `HX-Trigger` (JSON), `hx-swap="none"`                 | Server emits the full toast payload in the trigger; no follow-up GET.                |
+| Theme toggle           | `hx-put`, `HX-Trigger`, server session                | The server stores the theme and triggers a CSS variable refresh.                     |
+| Sortable table         | Query params, `hx-include`, `hx-trigger="change"`     | Headers and filters request a re-rendered table region.                              |
+| Status retargeting     | `htmx:beforeSwap` + `data-target-4xx`                 | A 30-line equivalent of the response-targets extension.                              |
+| Global error toast     | `htmx:responseError`, `htmx:sendError`                | Network and server errors surface as toasts without per-call wiring.                 |
 
 ## Mental Model For React Developers
 
@@ -96,6 +125,8 @@ In this app, the split is different:
 | Event handler like `onClick` | HTML attribute like `hx-get`, `hx-post`, `hx-delete`      |
 | Conditional render           | Server chooses which partial to render                    |
 | Client-side list update      | Server returns one row, table, or OOB fragment            |
+| Context provider             | Server session + render locals                            |
+| Route loader                 | The Express route itself                                  |
 
 The browser is not responsible for rebuilding the UI from JSON. The server already knows how the UI should look, so it sends the ready-to-insert HTML.
 
@@ -107,21 +138,13 @@ The browser is not responsible for rebuilding the UI from JSON. The server alrea
 ├── package.json
 ├── src/
 │   ├── app.js
-│   ├── data/
-│   │   └── demoStore.js
-│   ├── lib/
-│   │   ├── listen.js
-│   │   ├── rendering.js
-│   │   └── theme.js
-│   ├── middleware/
-│   │   └── auth.js
-│   └── routes/
-│       ├── api.js
-│       ├── auth.js
-│       └── dashboard.js
+│   ├── data/demoStore.js
+│   ├── lib/{listen,rendering,theme}.js
+│   ├── middleware/auth.js
+│   └── routes/{api,auth,dashboard}.js
 ├── public/
-│   └── css/
-│       └── style.css
+│   ├── css/style.css
+│   └── js/htmx-app.js
 ├── views/
 │   ├── layout.ejs
 │   ├── login.ejs
@@ -129,7 +152,7 @@ The browser is not responsible for rebuilding the UI from JSON. The server alrea
 │   └── partials/
 │       ├── auth/
 │       ├── crud/
-│       ├── dashboard/
+│       ├── dashboard/        # widgets, tabs, polling, theme, advanced
 │       ├── data/
 │       ├── feed/
 │       ├── modal/
@@ -144,32 +167,28 @@ The root `server.js` is intentionally small. It imports the configured app from 
 
 The `src/` folder owns server behavior:
 
-- `src/app.js`: Express app setup, middleware, static files, route registration.
+- `src/app.js`: Express app, middleware, static files, route registration. Issues a per-session CSRF token and sets `Vary: HX-Request` globally.
 - `src/data/demoStore.js`: in-memory demo data and state update helpers.
 - `src/routes/auth.js`: login, logout, validation, and registration wizard routes.
 - `src/routes/dashboard.js`: root redirect and full dashboard page.
 - `src/routes/api.js`: htmx fragment endpoints.
 - `src/middleware/auth.js`: auth guard for protected routes and htmx redirects.
 - `src/lib/rendering.js`: shared full-page and fragment render helpers.
-- `src/lib/theme.js`: dark/light CSS variable generation.
+- `src/lib/theme.js`: dark/light CSS variable generation, including a radius and shadow scale.
 - `src/lib/listen.js`: port fallback logic for local startup.
 
 The `views/` folder owns server-rendered HTML:
 
-- `views/layout.ejs`: shared HTML document shell.
-- `views/login.ejs` and `views/dashboard.ejs`: full-page views.
-- `views/partials/auth`: login, validation, remember-me, registration wizard.
-- `views/partials/dashboard`: widgets, tabs, polling, theme toggle.
-- `views/partials/crud`: CRUD table and row fragments.
-- `views/partials/search`: live search form and results.
-- `views/partials/feed`: infinite scroll feed.
-- `views/partials/modal`: server-loaded modal.
-- `views/partials/toast`: server-triggered toast UI.
-- `views/partials/data`: sortable and filterable data table.
+- `views/layout.ejs`: shared HTML document shell with the CSRF meta tag, theme variables, htmx core, and the small client glue script.
+- `views/login.ejs`, `views/dashboard.ejs`: full-page views.
+- `views/partials/dashboard/advanced.ejs`: live demos of the JSON-payload trigger, status retargeting, and custom confirm dialog.
+- Other partials are grouped by feature.
+
+`public/js/htmx-app.js` is the small client-side glue. It is intentionally short and limited to escape hatches that don't fit on a single attribute. See [HTMX_REFERENCE.md](./HTMX_REFERENCE.md) Sections 11 and 14.
 
 ## How Rendering Works
 
-There are two render paths in `src/lib/rendering.js`.
+Two render paths in `src/lib/rendering.js`.
 
 `renderPage(req, res, view, data)` renders a complete page:
 
@@ -177,7 +196,7 @@ There are two render paths in `src/lib/rendering.js`.
 2. Inject that page output into `layout.ejs`.
 3. Send a full HTML document.
 
-This is used for routes like:
+Used for routes like:
 
 ```text
 GET /login
@@ -189,7 +208,7 @@ GET /dashboard
 1. Render one EJS partial.
 2. Send only the HTML needed for one page region.
 
-This is used for routes like:
+Used for routes like:
 
 ```text
 GET /api/search
@@ -200,40 +219,35 @@ PUT /api/preferences/theme
 
 That distinction is important. Full pages are for navigation. Fragments are for htmx swaps.
 
+## Content Negotiation
+
+Because htmx sets `HX-Request: true` on every request, the same URL can serve a JSON API client and an htmx browser:
+
+```js
+app.get("/items", (req, res) => {
+  if (req.get("HX-Request")) {
+    return renderFragment(req, res, "partials/items-table");
+  }
+  res.json(store.getItems());
+});
+```
+
+When you do this, set `Vary: HX-Request` so caches don't serve a fragment to a non-htmx caller (or vice versa). This repo applies that header globally in `src/app.js`.
+
 ## Why All The View Files Are `.ejs`
 
-`.ejs` means Embedded JavaScript template.
-
-It is not the same thing as an ES module. The name is easy to confuse because both mention JavaScript, but they solve different problems.
-
-| Thing        | File type               | Purpose                                                         |
-| ------------ | ----------------------- | --------------------------------------------------------------- |
-| EJS template | `.ejs`                  | Server-side HTML template with embedded JavaScript expressions. |
-| ES module    | usually `.js` or `.mjs` | JavaScript module syntax using `import` and `export`.           |
+`.ejs` means Embedded JavaScript template — server-side HTML templating with small bits of JS expression. It is not the same thing as an ES module; the names are easy to confuse.
 
 EJS files are not imported by the browser. Express renders them on the server, turns them into HTML strings, and sends that HTML to the browser.
 
-EJS lets the server write HTML with small bits of dynamic logic:
-
 ```ejs
 <h1><%= currentUser.name %></h1>
-```
-
-It also supports includes, which is why partials work like server-side components:
-
-```ejs
 <%- include("partials/dashboard/theme-toggle") %>
 ```
 
 This is "embedded JavaScript in HTML templates", not "embedded CSS/style in JS." CSS still lives in `public/css/style.css`.
 
-We use EJS here because it fits the htmx style well:
-
-- The server returns HTML directly.
-- Partials are easy to render independently.
-- Express supports it with very little setup.
-- There is no frontend build step.
-- Templates stay close to the HTML that htmx swaps.
+We use EJS here because it fits the htmx style well: server returns HTML directly, partials are easy to render independently, Express supports it with very little setup, no frontend build step, templates stay close to the HTML that htmx swaps.
 
 This is not the only valid choice. htmx works with any backend that can return HTML: Rails ERB, Django templates, Jinja, Go templates, Phoenix HEEx, Laravel Blade, JSX on the server, or plain string rendering.
 
@@ -246,120 +260,42 @@ const express = require("express");
 module.exports = { app, resetDemoState };
 ```
 
-That is why `package.json` does not set:
+That is why `package.json` does not set `"type": "module"`.
 
-```json
-{ "type": "module" }
-```
-
-This is a pragmatic Express demo decision, not an htmx rule.
-
-CommonJS is still common for small Express apps because:
-
-- Express examples and middleware examples often use `require`.
-- Node's built-in test runner can require the app directly.
-- There is no build step or transpilation.
-- The app is server-only, so ESM does not unlock a frontend bundling benefit.
-- The code stays familiar for older Node/Express conventions.
-
-Using ESM would also be fine:
-
-```js
-import express from "express";
-export { app, resetDemoState };
-```
-
-But then we would update imports, exports, and possibly some test setup. htmx does not care either way because htmx only sees the HTML response in the browser.
-
-## Is EJS/CommonJS The Common Practice In htmx?
-
-The common htmx practice is not "use EJS" or "use CommonJS."
-
-htmx is backend-agnostic. It does not know or care whether the server used EJS, JSX, Blade, Django templates, Rails ERB, Go templates, or something else. htmx only receives HTML in the browser.
-
-The common practice is:
-
-1. Keep most UI state on the server.
-2. Return HTML fragments.
-3. Use normal HTTP verbs and forms.
-4. Use htmx attributes to request and swap fragments.
-5. Avoid duplicating the same state model in a client framework unless the UI truly needs it.
-
-This repo uses EJS and CommonJS because they are lightweight and direct for an Express demo. A production htmx app should use the template and module system that best fits its backend.
+This is a pragmatic Express demo decision, not an htmx rule. CommonJS keeps the code familiar, lets Node's built-in test runner require the app directly, and avoids any build step. Using ESM is fine; htmx does not care because it only sees the HTML response in the browser.
 
 ## Coding Decisions
 
 ### Server owns UI state
 
-Demo data lives in `src/data/demoStore.js`:
-
-- users
-- items
-- stats
-- activity feed
-- sortable rows
-- latest toast
-
-In production, these would move to a database or service layer. For this showcase, in-memory data keeps the htmx mechanics visible.
+Demo data lives in `src/data/demoStore.js`: users, items, stats, activity feed, sortable rows, latest toast. In production these would move to a database or service layer. For this showcase, in-memory data keeps the htmx mechanics visible.
 
 ### Views are split by page vs partial
 
-Top-level views:
-
-- `layout.ejs`: shared document shell, CSS, htmx script, theme style tag
-- `login.ejs`: full login page
-- `dashboard.ejs`: full authenticated dashboard page
-
-Partials:
-
-- Render small swappable regions.
-- Can be returned by `/api/...` routes.
-- Keep each htmx feature isolated.
-- Are grouped by feature area under `views/partials/*`.
-
-If you are coming from React, think of partials as server-rendered components that can also be used as HTTP responses.
+Top-level views (`layout.ejs`, `login.ejs`, `dashboard.ejs`) are pages. Everything in `views/partials/` is a swappable region returned by an `/api/...` route.
 
 ### Routes return HTML instead of JSON
 
-Example: `/api/search` filters the search corpus and renders `views/partials/search/search-results.ejs`.
-
-The browser does not receive:
-
-```json
-[{ "title": "hx-get" }]
-```
-
-It receives:
-
-```html
-<article class="result-row">...</article>
-```
-
-That is the core htmx tradeoff: less client state and less client code, in exchange for making the server responsible for UI rendering.
+Example: `/api/search` filters the corpus and renders `views/partials/search/search-results.ejs`. The browser receives HTML, not JSON. That is the core htmx tradeoff: less client state and less client code, in exchange for making the server responsible for UI rendering.
 
 ### htmx is served locally
 
-The app depends on the official `htmx.org` package and serves:
+The app depends on the official `htmx.org` package and serves `/vendor/htmx.min.js`. No CDN dependency for the core. Extensions (idiomorph, head-support, response-targets, sse, ws) are intentionally **not** bundled — they're documented in [HTMX_REFERENCE.md](./HTMX_REFERENCE.md) Section 12 as opt-in additions.
 
-```text
-/vendor/htmx.min.js
-```
+### A small client script earns its keep
 
-This avoids local demo breakage when CDN access is blocked. It is still official htmx, not a framework layered on top.
+`public/js/htmx-app.js` (~210 lines, no dependencies) handles four things that don't fit cleanly in attributes:
+
+1. **CSRF**: forwards the per-session token via the `htmx:configRequest` event.
+2. **Custom confirm dialog**: replaces `window.confirm()` via the `htmx:confirm` event. Buttons can decorate the dialog with `data-confirm-ok`, `data-confirm-cancel`, `data-confirm-tone="danger"`.
+3. **Global error toast**: `htmx:responseError` and `htmx:sendError` push a toast so individual buttons don't have to handle failure.
+4. **HX-Trigger JSON payload**: the `notify` event listener renders toasts straight from the server's event payload, no follow-up GET.
+
+The same file also includes a 30-line equivalent of the `response-targets` extension: it reads `data-target-4xx`, `data-target-5xx`, `data-target-error` on the trigger and redirects 4xx/5xx swaps accordingly.
 
 ### CSS handles visual behavior
 
-`public/css/style.css` contains:
-
-- layout
-- dark/light theme variables
-- responsive behavior
-- loading skeletons
-- htmx request states
-- modal and toast presentation
-- reduced-motion handling
-
-There is no frontend framework-specific styling system.
+`public/css/style.css` contains layout, dark/light theme variables (a radius and shadow scale, accessible focus rings, hover states), responsive behavior, loading skeletons, htmx request-state classes, modal/confirm/toast presentation, and reduced-motion handling. There is no frontend framework-specific styling system.
 
 ## How To Add A New htmx Feature
 
@@ -371,20 +307,16 @@ Use this pattern:
 4. Decide the swap target and swap strategy.
 5. Add a focused test if the behavior is important.
 
-Example:
-
 ```html
 <button hx-get="/api/example" hx-target="#example-region" hx-swap="innerHTML">
   Load example
 </button>
 ```
 
-Server route:
-
 ```js
 app.get("/api/example", requireAuth, (req, res) => {
   renderFragment(req, res, "partials/example", {
-    value: "Rendered on the server",
+    value: "Rendered on the server"
   });
 });
 ```
@@ -394,22 +326,43 @@ app.get("/api/example", requireAuth, (req, res) => {
 Run:
 
 ```bash
-bun run test
-```
-
-or:
-
-```bash
 npm test
 ```
 
-The smoke tests verify:
+The tests verify:
 
 - anonymous users redirect to `/login`
 - the login page exposes the htmx validation and wizard attributes
+- failed login returns a visible validation message fragment
 - an authenticated dashboard contains the planned htmx feature demos
+- creating a CRUD row returns an out-of-band count update
+- the architecture stays split between `server.js`, `src/`, and `views/`
 
-The app also exports `app` and `resetDemoState` from `server.js` so tests can start the Express app on a random port without depending on a long-running server.
+The app exports `app` and `resetDemoState` from `server.js` so tests can start the Express app on a random port without depending on a long-running server.
+
+## When htmx Is Not The Right Fit
+
+htmx is built for "the server already knows the next correct HTML." That model is great for admin panels, dashboards, internal tools, CRUD apps, e-commerce account flows, search and filter pages, documentation portals, and most SaaS settings UIs.
+
+It is not the right tool when the browser needs to own a lot of temporary UI state before the server is involved:
+
+- Figma-style editors
+- Notion-style collaborative editing surfaces
+- rich spreadsheet/grid apps
+- complex map editors
+- games
+- offline-first PWAs
+
+For those, a client framework — React, Vue, Svelte, Solid — earns its keep.
+
+## What htmx Composes With
+
+- **Alpine.js** — declarative client-only state for menus, dropdowns, popovers, accordions, and other widgets that don't need a server round trip. Pairs cleanly with htmx; many real htmx apps use both.
+- **Hyperscript** — htmx's sibling project from the same author. Inline behavior (`_="on click toggle .open"`) without writing `<script>` blocks.
+- **Web Components** — encapsulate non-htmx UI (charts, editors, custom inputs) and let htmx drive the surrounding shell.
+- **Vanilla `fetch()`** — for the genuinely imperative bits, drop straight into JS. htmx doesn't take over the page.
+
+This repo intentionally avoids mixing in Alpine or Hyperscript so the htmx model alone is easy to study, but real production apps usually combine htmx with one of them.
 
 ## Production Notes
 
@@ -418,11 +371,21 @@ This is a showcase, not production auth or persistence.
 Before using this pattern in production, replace or add:
 
 - database-backed models
-- real password hashing
-- CSRF protection
-- persistent sessions
+- real password hashing (bcrypt/argon2)
+- **CSRF verification** on state-changing routes (this repo wires the token but does not enforce it)
+- persistent sessions (Redis, database-backed store)
 - structured logging
 - route-level validation
 - more complete integration tests
 
-The htmx architecture can still stay the same: server-rendered pages, server-rendered fragments, and small HTML attributes for interaction.
+Two things this repo gets right that are easy to forget:
+
+- **`Vary: HX-Request`** is set globally in `src/app.js`. Without it, a CDN can serve a fragment response to a full-page request (or vice versa).
+- **htmx-aware auth redirects** in `src/middleware/auth.js`. Expired-session requests from htmx need `HX-Redirect`, not a 302 — the latter would leave htmx trying to swap an empty body.
+
+Two CSP considerations that this repo papers over for demo simplicity:
+
+- `views/layout.ejs` and `/api/preferences/theme-style` emit inline `<style>` tags. Production with a strict CSP needs `style-src` with a nonce or hash, or the theme variables moved into a static stylesheet served per-theme.
+- The htmx core script is served locally. If you load extensions from a CDN, add the CDN to `script-src`.
+
+The htmx architecture itself is unchanged in production: server-rendered pages, server-rendered fragments, and small HTML attributes for interaction.

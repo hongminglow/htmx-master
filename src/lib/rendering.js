@@ -39,6 +39,7 @@ function baseLocals(req) {
   return {
     currentUser: requestSession.user,
     theme: requestSession.theme || "dark",
+    csrfToken: requestSession.csrfToken || "",
     title: "htmx Unleashed",
     themeCss,
     highlightText,

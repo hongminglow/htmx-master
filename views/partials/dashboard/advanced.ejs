@@ -1,0 +1,67 @@
+<div class="section-heading">
+  <div>
+    <p class="eyebrow">Advanced patterns</p>
+    <h2>Server-driven events and error retargeting</h2>
+  </div>
+  <p>Three escape hatches for things that don't fit cleanly into a single hx-* attribute.</p>
+</div>
+
+<div class="advanced-grid">
+  <article class="advanced-card">
+    <header>
+      <span class="mono-label">HX-Trigger JSON</span>
+      <h3>Notify without a follow-up GET</h3>
+    </header>
+    <p>The endpoint returns 204 with <code>HX-Trigger: {"notify": {...}}</code>. The client listens for the <code>notify</code> event and renders the toast straight from the payload — no second round trip.</p>
+    <div class="button-row">
+      <button
+        class="button button-primary"
+        type="button"
+        hx-post="/api/notify?kind=success"
+        hx-swap="none"
+      >Emit success</button>
+      <button
+        class="button button-ghost"
+        type="button"
+        hx-post="/api/notify?kind=warning"
+        hx-swap="none"
+      >Emit warning</button>
+    </div>
+  </article>
+
+  <article class="advanced-card">
+    <header>
+      <span class="mono-label">Status retarget</span>
+      <h3>Render error responses elsewhere</h3>
+    </header>
+    <p>The button's <code>hx-target</code> is the green slot on the right. The mini response-targets helper in <code>htmx-app.js</code> reads <code>data-target-4xx</code> and redirects only the 4xx response into the red slot below.</p>
+    <div class="button-row">
+      <button
+        class="button button-primary"
+        type="button"
+        hx-get="/api/diagnostics/error?status=4"
+        hx-target="#advanced-success-slot"
+        hx-swap="innerHTML"
+        data-target-4xx="#advanced-error-slot"
+      >Trigger 422 (retargeted)</button>
+      <button
+        class="button button-ghost"
+        type="button"
+        hx-get="/api/diagnostics/error"
+        hx-swap="none"
+      >Trigger 503 (toast)</button>
+    </div>
+    <div class="advanced-slots">
+      <div id="advanced-success-slot" class="advanced-slot ok">2xx responses land here.</div>
+      <div id="advanced-error-slot" class="advanced-slot err">4xx responses are retargeted here.</div>
+    </div>
+  </article>
+
+  <article class="advanced-card">
+    <header>
+      <span class="mono-label">hx-confirm</span>
+      <h3>Custom modal instead of window.confirm</h3>
+    </header>
+    <p>The CRUD delete button below the table uses <code>hx-confirm</code>. The <code>htmx:confirm</code> handler intercepts it, opens a styled dialog, and resumes the request with <code>issueRequest(true)</code>. <code>data-confirm-ok</code>, <code>data-confirm-cancel</code>, and <code>data-confirm-tone</code> on the trigger control the dialog copy and tone.</p>
+  </article>
+</div>

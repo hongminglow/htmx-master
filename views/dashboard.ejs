@@ -20,14 +20,15 @@
 
     <nav class="side-nav">
       <a href="#widgets">Lazy widgets</a>
-      <a href="#feed">Infinite feed</a>
+      <a href="#feed">Activity feed</a>
       <a href="#search">Live search</a>
       <a href="#crud">CRUD</a>
       <a href="#tabs">Tabs</a>
       <a href="#polling">Polling</a>
       <a href="#modal">Modal</a>
-      <a href="#toast">Toast</a>
-      <a href="#sorting">Sort and filter</a>
+      <a href="#toast">Notifications</a>
+      <a href="#sorting">Sort &amp; filter</a>
+      <a href="#advanced">Advanced patterns</a>
     </nav>
 
     <div class="sidebar-footer">
@@ -41,7 +42,8 @@
     <header class="workspace-header">
       <div>
         <p class="eyebrow">Workspace</p>
-        <h1>Interactive operations workspace.</h1>
+        <h1>Interactive operations workspace</h1>
+        <p class="lede">Every interaction below is a normal HTTP request. The server returns HTML, htmx swaps it in.</p>
       </div>
       <div class="header-actions">
         <%- include("partials/dashboard/theme-toggle") %>
@@ -100,6 +102,10 @@
 
     <section id="sorting" class="showcase-section">
       <%- include("partials/data/sortable-table") %>
+    </section>
+
+    <section id="advanced" class="showcase-section">
+      <%- include("partials/dashboard/advanced") %>
     </section>
   </main>
 

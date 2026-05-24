@@ -7,7 +7,13 @@
 </div>
 
 <div class="crud-toolbar">
-  <form class="inline-create" hx-post="/api/items" hx-target="#items-body" hx-swap="beforeend">
+  <form
+    class="inline-create"
+    hx-post="/api/items"
+    hx-target="#items-body"
+    hx-swap="beforeend"
+    hx-on::after-request="if (event.detail.successful) this.reset()"
+  >
     <label class="field">
       <span>Item</span>
       <input name="name" placeholder="New workspace item" required>
@@ -31,6 +37,8 @@
     <span>items</span>
   </div>
 </div>
+
+<div id="item-form-error" class="form-error-region" aria-live="polite"></div>
 
 <div class="table-wrap">
   <table class="data-table">

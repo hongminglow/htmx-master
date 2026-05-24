@@ -1,4 +1,5 @@
 const path = require("node:path");
+const crypto = require("node:crypto");
 const express = require("express");
 const session = require("express-session");
 const { resetDemoState } = require("./data/demoStore");
@@ -29,6 +30,26 @@ function createApp() {
       }
     })
   );
+
+  // Tell intermediaries (CDNs, proxies) that the response can vary based on
+  // whether htmx made the request. Without this, a fragment response can be
+  // cached and served back to a normal full-page request, or vice versa.
+  app.use((req, res, next) => {
+    res.set("Vary", "HX-Request");
+    next();
+  });
+
+  // Issue a CSRF token per session. The client picks it up from the
+  // <meta name="csrf-token"> tag and forwards it on every htmx request via
+  // the htmx:configRequest event. Real apps should also _verify_ the token
+  // on state-changing routes; that enforcement is intentionally minimal here
+  // so the demo stays focused on the wiring pattern.
+  app.use((req, res, next) => {
+    if (req.session && !req.session.csrfToken) {
+      req.session.csrfToken = crypto.randomBytes(24).toString("hex");
+    }
+    next();
+  });
 
   registerDashboardRoutes(app);
   registerAuthRoutes(app);
