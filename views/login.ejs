@@ -1,9 +1,36 @@
 <main class="auth-shell">
   <section class="auth-visual" aria-labelledby="auth-title">
     <div class="auth-visual__grid" aria-hidden="true"></div>
+    <div class="auth-visual__glow" aria-hidden="true"></div>
+
     <div class="auth-visual__content">
-      <p class="eyebrow">Workspace access</p>
-      <h1 id="auth-title">htmx Unleashed</h1>
+      <span class="status-pill">
+        <span class="status-dot"></span>
+        Live demo
+      </span>
+      <h1 id="auth-title">A dashboard built with <span class="auth-accent">no JS framework</span>.</h1>
+      <p class="auth-tagline">Express on the server. EJS for templates. htmx for interactions. Vanilla CSS for the rest. ~14&nbsp;KB on the wire.</p>
+
+      <div class="code-teaser" role="img" aria-label="htmx code example">
+        <div class="code-teaser__chrome">
+          <span></span><span></span><span></span>
+          <small>views/partials/crud/item-row.ejs</small>
+        </div>
+        <pre><code><span class="tk-tag">&lt;button</span>
+  <span class="tk-attr">hx-delete</span>=<span class="tk-str">"/api/items/42"</span>
+  <span class="tk-attr">hx-target</span>=<span class="tk-str">"closest tr"</span>
+  <span class="tk-attr">hx-swap</span>=<span class="tk-str">"outerHTML swap:500ms"</span>
+  <span class="tk-attr">hx-confirm</span>=<span class="tk-str">"Delete this row?"</span>
+<span class="tk-tag">&gt;</span>
+  Delete
+<span class="tk-tag">&lt;/button&gt;</span></code></pre>
+      </div>
+
+      <ul class="auth-proof">
+        <li><span class="auth-proof__dot"></span>HATEOAS</li>
+        <li><span class="auth-proof__dot"></span>Locality of behavior</li>
+        <li><span class="auth-proof__dot"></span>Progressive enhancement</li>
+      </ul>
     </div>
   </section>
 

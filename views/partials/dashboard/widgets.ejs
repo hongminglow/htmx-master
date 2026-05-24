@@ -1,16 +1,26 @@
 <div class="section-heading">
   <div>
-    <p class="eyebrow">Dashboard metrics</p>
+    <p class="eyebrow"><%- icon("grid", { size: 14 }) %> Dashboard metrics</p>
     <h2>Lazy-loaded dashboard widgets</h2>
   </div>
   <p>Metrics load after the workspace opens.</p>
 </div>
 
+<%
+  // Map widget id to a CSS tone class so each tile has its own color accent.
+  const tones = {
+    requests: "tone-green",
+    swaps: "tone-cyan",
+    latency: "tone-violet",
+    sessions: "tone-amber"
+  };
+%>
+
 <div class="widget-grid">
   <% widgetIds.forEach((id, index) => { %>
     <% const trigger = index === 0 ? "load" : "load delay:" + ((index + 1) * 140) + "ms"; %>
     <article
-      class="metric-tile"
+      class="metric-tile <%= tones[id] || "tone-green" %>"
       id="widget-<%= id %>"
       hx-get="/api/widget/<%= id %>"
       hx-trigger="<%= trigger %>"

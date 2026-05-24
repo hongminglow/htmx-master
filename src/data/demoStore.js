@@ -19,28 +19,45 @@ const widgetMap = {
     value: "18,420",
     detail: "Workspace actions served today",
     delta: "+12.4%",
-    tone: "green"
+    tone: "green",
+    visual: "sparkline",
+    points: [42, 48, 39, 52, 60, 55, 64, 70, 68, 76, 82, 88]
   },
   swaps: {
     label: "UI updates",
     value: "7,834",
     detail: "Interface regions refreshed",
     delta: "+8.1%",
-    tone: "cyan"
+    tone: "cyan",
+    visual: "ring",
+    percent: 78
   },
   latency: {
     label: "Median latency",
     value: "48 ms",
-    detail: "P95 route response 116 ms",
+    detail: "P95 response 116 ms",
     delta: "-18 ms",
-    tone: "violet"
+    tone: "violet",
+    visual: "bar",
+    bars: [
+      { label: "P50", value: 48, max: 200, accent: true },
+      { label: "P75", value: 78, max: 200 },
+      { label: "P95", value: 116, max: 200 },
+      { label: "P99", value: 184, max: 200 }
+    ]
   },
   sessions: {
     label: "Live sessions",
     value: "312",
     detail: "Polling, searching, editing",
     delta: "+31",
-    tone: "amber"
+    tone: "amber",
+    visual: "delta",
+    breakdown: [
+      { label: "Polling", value: 124 },
+      { label: "Search", value: 98 },
+      { label: "CRUD", value: 90 }
+    ]
   }
 };
 

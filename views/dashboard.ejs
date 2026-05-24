@@ -18,17 +18,22 @@
       </span>
     </a>
 
-    <nav class="side-nav">
-      <a href="#widgets">Lazy widgets</a>
-      <a href="#feed">Activity feed</a>
-      <a href="#search">Live search</a>
-      <a href="#crud">CRUD</a>
-      <a href="#tabs">Tabs</a>
-      <a href="#polling">Polling</a>
-      <a href="#modal">Modal</a>
-      <a href="#toast">Notifications</a>
-      <a href="#sorting">Sort &amp; filter</a>
-      <a href="#advanced">Advanced patterns</a>
+    <nav class="side-nav" aria-label="Sections">
+      <span class="side-nav-group">Live data</span>
+      <a href="#widgets"><%- icon("grid", { size: 16 }) %><span>Lazy widgets</span></a>
+      <a href="#feed"><%- icon("activity", { size: 16 }) %><span>Activity feed</span></a>
+      <a href="#polling"><%- icon("refresh", { size: 16 }) %><span>Polling</span></a>
+
+      <span class="side-nav-group">Forms &amp; data</span>
+      <a href="#search"><%- icon("search", { size: 16 }) %><span>Live search</span></a>
+      <a href="#crud"><%- icon("table", { size: 16 }) %><span>CRUD</span></a>
+      <a href="#sorting"><%- icon("bars", { size: 16 }) %><span>Sort &amp; filter</span></a>
+
+      <span class="side-nav-group">Patterns</span>
+      <a href="#tabs"><%- icon("layers", { size: 16 }) %><span>Tabs</span></a>
+      <a href="#modal"><%- icon("window", { size: 16 }) %><span>Modal</span></a>
+      <a href="#toast"><%- icon("bell", { size: 16 }) %><span>Notifications</span></a>
+      <a href="#advanced"><%- icon("zap", { size: 16 }) %><span>Advanced</span></a>
     </nav>
 
     <div class="sidebar-footer">
@@ -39,33 +44,49 @@
   </aside>
 
   <main class="workspace" id="top">
-    <header class="workspace-header">
-      <div>
-        <p class="eyebrow">Workspace</p>
-        <h1>Interactive operations workspace</h1>
-        <p class="lede">Every interaction below is a normal HTTP request. The server returns HTML, htmx swaps it in.</p>
-      </div>
-      <div class="header-actions">
-        <%- include("partials/dashboard/theme-toggle") %>
-        <form hx-post="/auth/logout" hx-target="body" hx-swap="outerHTML transition:true">
-          <button class="button button-ghost" type="submit">Log out</button>
-        </form>
-      </div>
-    </header>
+    <section class="hero">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-glow" aria-hidden="true"></div>
 
-    <section class="intro-band" aria-label="Showcase scope">
-      <div>
-        <span class="mono-label">Mode</span>
-        <strong>Live dashboard</strong>
+      <div class="hero-top">
+        <span class="status-pill">
+          <span class="status-dot"></span>
+          Live demo
+        </span>
+        <div class="header-actions">
+          <%- include("partials/dashboard/theme-toggle") %>
+          <form hx-post="/auth/logout" hx-target="body" hx-swap="outerHTML transition:true">
+            <button class="button button-ghost icon-leading" type="submit">
+              <%- icon("logout", { size: 16 }) %>
+              <span>Log out</span>
+            </button>
+          </form>
+        </div>
       </div>
-      <div>
-        <span class="mono-label">Session</span>
-        <strong>Signed in as <%= currentUser.name %></strong>
+
+      <div class="hero-body">
+        <h1>Welcome back, <span class="hero-name"><%= currentUser.name %></span>.</h1>
+        <p class="lede">Server-driven UI in 14&nbsp;KB of htmx. Every interaction below is a normal HTTP request &mdash; the server responds with HTML and htmx swaps it in.</p>
       </div>
-      <div>
-        <span class="mono-label">Data</span>
-        <strong>In-memory workspace</strong>
-      </div>
+
+      <dl class="hero-meta">
+        <div>
+          <dt>Mode</dt>
+          <dd>Live workspace</dd>
+        </div>
+        <div>
+          <dt>Session</dt>
+          <dd><%= currentUser.role %></dd>
+        </div>
+        <div>
+          <dt>Data</dt>
+          <dd>In-memory</dd>
+        </div>
+        <div>
+          <dt>Theme</dt>
+          <dd><%= theme === "light" ? "Light" : "Dark" %></dd>
+        </div>
+      </dl>
     </section>
 
     <section id="widgets" class="showcase-section">

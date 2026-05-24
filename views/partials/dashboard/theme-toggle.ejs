@@ -1,10 +1,12 @@
 <button
   id="theme-switcher"
-  class="button button-ghost"
+  class="button button-ghost icon-leading"
   type="button"
   hx-put="/api/preferences/theme"
   hx-target="#theme-switcher"
   hx-swap="outerHTML"
+  aria-label="Toggle theme"
 >
-  <%= theme === "light" ? "Dark mode" : "Light mode" %>
+  <%- icon(theme === "light" ? "moon" : "sun", { size: 16 }) %>
+  <span><%= theme === "light" ? "Dark" : "Light" %></span>
 </button>

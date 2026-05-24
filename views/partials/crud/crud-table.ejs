@@ -30,7 +30,10 @@
         <option>Active</option>
       </select>
     </label>
-    <button class="button button-primary" type="submit">Add row</button>
+    <button class="button button-primary icon-leading" type="submit">
+      <%- icon("plus", { size: 16 }) %>
+      <span>Add row</span>
+    </button>
   </form>
   <div class="count-chip">
     <span id="item-count"><%= items.length %></span>

@@ -1,4 +1,5 @@
 const { themeCss } = require("./theme");
+const { icon } = require("./icons");
 
 function escapeHtml(value) {
   return String(value)
@@ -43,7 +44,8 @@ function baseLocals(req) {
     title: "htmx Unleashed",
     themeCss,
     highlightText,
-    statusClass
+    statusClass,
+    icon
   };
 }
 

@@ -1,6 +1,79 @@
-<p class="metric-label"><%= widget.label %></p>
-<div class="metric-value"><%= widget.value %></div>
-<div class="metric-meta">
+<div class="metric-head">
+  <p class="metric-label"><%= widget.label %></p>
   <span class="delta delta-<%= widget.tone %>"><%= widget.delta %></span>
-  <span><%= widget.detail %></span>
 </div>
+
+<div class="metric-value"><%= widget.value %></div>
+
+<% if (widget.visual === "sparkline") { %>
+  <%
+    const points = widget.points;
+    const min = Math.min(...points);
+    const max = Math.max(...points);
+    const range = max - min || 1;
+    const w = 100;
+    const h = 32;
+    const stepX = w / (points.length - 1);
+    const path = points.map((p, i) => {
+      const x = (i * stepX).toFixed(2);
+      const y = (h - ((p - min) / range) * (h - 4) - 2).toFixed(2);
+      return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+    }).join(" ");
+    const area = `${path} L ${w} ${h} L 0 ${h} Z`;
+  %>
+  <svg class="metric-spark" viewBox="0 0 <%= w %> <%= h %>" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="spark-<%= widget.tone %>" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="currentColor" stop-opacity="0.32"/>
+        <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="<%= area %>" fill="url(#spark-<%= widget.tone %>)"/>
+    <path d="<%= path %>" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+  </svg>
+  <p class="metric-meta"><span><%= widget.detail %></span></p>
+
+<% } else if (widget.visual === "ring") { %>
+  <%
+    const r = 18;
+    const c = 2 * Math.PI * r;
+    const offset = c * (1 - widget.percent / 100);
+  %>
+  <div class="metric-ring-wrap">
+    <svg class="metric-ring" viewBox="0 0 48 48" aria-hidden="true">
+      <circle cx="24" cy="24" r="<%= r %>" class="ring-track"/>
+      <circle cx="24" cy="24" r="<%= r %>" class="ring-progress"
+              stroke-dasharray="<%= c.toFixed(2) %>"
+              stroke-dashoffset="<%= offset.toFixed(2) %>"
+              transform="rotate(-90 24 24)"/>
+    </svg>
+    <div class="metric-ring-text">
+      <strong><%= widget.percent %>%</strong>
+      <span><%= widget.detail %></span>
+    </div>
+  </div>
+
+<% } else if (widget.visual === "bar") { %>
+  <ul class="metric-bars" aria-label="Latency distribution">
+    <% widget.bars.forEach((bar) => { %>
+      <li>
+        <span class="metric-bar-label"><%= bar.label %></span>
+        <span class="metric-bar-track">
+          <span class="metric-bar-fill <%= bar.accent ? "is-accent" : "" %>" style="width: <%= Math.round((bar.value / bar.max) * 100) %>%"></span>
+        </span>
+        <span class="metric-bar-value"><%= bar.value %>ms</span>
+      </li>
+    <% }) %>
+  </ul>
+
+<% } else { %>
+  <ul class="metric-breakdown">
+    <% (widget.breakdown || []).forEach((row) => { %>
+      <li>
+        <span class="metric-dot"></span>
+        <span class="metric-bd-label"><%= row.label %></span>
+        <span class="metric-bd-value"><%= row.value %></span>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
