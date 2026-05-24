@@ -1,11 +1,27 @@
 <% if (!query) { %>
-  <div class="empty-state">Start typing to search available features.</div>
+  <div class="search-empty">
+    <span class="search-empty__icon"><%- icon("sparkles", { size: 22 }) %></span>
+    <div>
+      <strong>Ready when you are.</strong>
+      <p>Try searching for <code>row</code>, <code>toast</code>, or <code>theme</code> to see live, server-rendered results.</p>
+    </div>
+  </div>
 <% } else if (!results.length) { %>
-  <div class="empty-state">No feature matched "<%= query %>".</div>
+  <div class="search-empty muted">
+    <span class="search-empty__icon"><%- icon("alert", { size: 22 }) %></span>
+    <div>
+      <strong>No match for "<%= query %>".</strong>
+      <p>Server returned an empty result set. Try a shorter or simpler query.</p>
+    </div>
+  </div>
 <% } else { %>
+  <p class="search-meta"><%= results.length %> result<%= results.length === 1 ? "" : "s" %> for "<%= query %>"</p>
   <% results.forEach((result) => { %>
     <article class="result-row">
-      <span class="badge badge-neutral"><%= result.group %></span>
+      <span class="badge badge-neutral">
+        <span class="badge-dot"></span>
+        <%= result.group %>
+      </span>
       <div>
         <strong><%- highlightText(result.title, query) %></strong>
         <p><%- highlightText(result.description, query) %></p>

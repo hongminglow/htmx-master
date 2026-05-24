@@ -1,27 +1,31 @@
 <div class="section-heading">
   <div>
-    <p class="eyebrow">Search</p>
+    <p class="eyebrow"><%- icon("search", { size: 14 }) %> Search</p>
     <h2>Live feature search</h2>
   </div>
   <p>Find available workspace actions and patterns.</p>
 </div>
 
 <div class="search-layout">
-  <label class="field search-field">
-    <span>Search features</span>
+  <div class="search-bar">
+    <span class="search-bar__icon" aria-hidden="true">
+      <%- icon("search", { size: 16 }) %>
+    </span>
     <input
       type="search"
       name="q"
       placeholder="Try search, row, toast, theme"
+      aria-label="Search features"
       hx-get="/api/search"
       hx-trigger="keyup changed delay:300ms"
       hx-target="#search-results"
       hx-indicator="#search-spinner"
       hx-sync="this:replace"
     >
-  </label>
-  <span id="search-spinner" class="spinner"></span>
-  <div id="search-results" class="search-results">
+    <span id="search-spinner" class="spinner search-bar__spinner" aria-label="Searching"></span>
+  </div>
+
+  <div id="search-results" class="search-results" aria-live="polite">
     <%- include("search-results", { query: "", results: [] }) %>
   </div>
 </div>

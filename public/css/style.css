@@ -916,14 +916,101 @@ textarea:focus {
 
 .search-layout {
   display: grid;
-  grid-template-columns: minmax(16rem, 22rem) auto minmax(0, 1fr);
   gap: 0.85rem;
-  align-items: start;
+}
+
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar input {
+  width: 100%;
+  min-height: 2.85rem;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  font-size: 0.95rem;
+}
+
+.search-bar__icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--faint);
+  pointer-events: none;
+  display: flex;
+}
+
+.search-bar__spinner {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+}
+
+.search-bar:focus-within .search-bar__icon {
+  color: var(--accent);
 }
 
 .search-results {
   display: grid;
   gap: 0.5rem;
+}
+
+.search-meta {
+  margin: 0 0 0.1rem;
+  color: var(--faint);
+  font-family: "Fira Code", ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+}
+
+.search-empty {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1.1rem 1.15rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-2) 60%, transparent);
+}
+
+.search-empty__icon {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  flex: 0 0 auto;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.search-empty.muted .search-empty__icon {
+  background: color-mix(in srgb, var(--amber) 14%, transparent);
+  color: var(--amber);
+}
+
+.search-empty strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+
+.search-empty p {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.search-empty code {
+  background: var(--surface-3);
+  font-size: 0.82rem;
 }
 
 .result-row {
@@ -1537,8 +1624,7 @@ textarea:focus {
     display: none;
   }
 
-  .showcase-section.two-column,
-  .search-layout {
+  .showcase-section.two-column {
     grid-template-columns: 1fr;
   }
 
