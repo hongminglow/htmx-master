@@ -30,6 +30,7 @@
     wireGlobalErrorToast();
     wireNotifyEvent();
     wireStatusRetarget();
+    wireToastCleanup();
   }
 
   /* ------------------------------------------------------------------ */
@@ -205,6 +206,25 @@
 
       event.detail.shouldSwap = true;
       event.detail.target = target;
+    });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Toast cleanup                                                       */
+  /* ------------------------------------------------------------------ */
+
+  function wireToastCleanup() {
+    // Toasts use a CSS animation chain: toast-in (entry) and toast-out
+    // (exit, delayed 5.5s). The exit keyframes collapse the toast's height,
+    // padding, margin, and borders to 0, but the element is still in the
+    // DOM holding layout space. Remove it here so the surrounding container
+    // shrinks back to its natural size.
+    document.body.addEventListener("animationend", function (event) {
+      if (event.animationName !== "toast-out") return;
+      const target = event.target;
+      if (target && target.classList && target.classList.contains("toast")) {
+        target.remove();
+      }
     });
   }
 })();
